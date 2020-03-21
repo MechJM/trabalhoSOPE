@@ -1,25 +1,15 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -pedantic
-TARGETS = $(pathsubst %.c,%,$(wildcard *.c))
+OBJS=main.o calc_time.o
 
-define make_target
-$(1): $(1).o
-	$(CC) $(CFLAGS) $$^ -o $$@
-endef
+simpledu: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o simpledu
 
-.PHONY: all clean
-all: $(TARGETS)
+main.o: main.c global.h calc_time.h
+	$(CC) $(CFLAGS) -c main.c 
 
-ifdef DEV_INFO
-DEV_FLAGS = -save-temps
-endif
-
-$(foreach TARGET,$(TARGETS),$(eval $(call make_target,$(TARGET))))
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(DEV_FLAGS) -MMD -c $< -o $@
+calc_time.o: calc_time.h global.h calc_time.c 
+	$(CC) $(CFLAGS) -c calc_time.c
 
 clean:
-	rm -f $(TARGETS) *.o *.d *.i *.s
-
--include $(TARGETS:=.d)
+	rm -f *.o *.d *.s *.i

@@ -1,16 +1,13 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include <string.h>
 #include "global.h"
+#include "calc_time.h"
 
+char log_filename[STR_LEN] = "log_file"; //setting default value
 
-int main(int argc,char* argv[],char* envp[])
+int main(int argc,char* argv[]/*,char* envp[]*/)
 {
-    if (argc < 2) fprintf(stderr,"Usage: simpledu -l [pathname] [-a] [-b] [-B size] [-L] [-S] [--max-depth=N]\n");
+    start = timestamp();
+
+    if (argc < 2) write(STDERR_FILENO,"Usage: simpledu -l [pathname] [-a] [-b] [-B size] [-L] [-S] [--max-depth=N]\n",76);
 
     //Setting default struct values
     mods.all = 0;
