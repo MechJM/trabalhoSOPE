@@ -8,7 +8,7 @@
 #include "global.h"
 
 
-int main(int argc,char* argv[]/*,char* envp[]*/)
+int main(int argc,char* argv[],char* envp[])
 {
     if (argc < 2) fprintf(stderr,"Usage: simpledu -l [pathname] [-a] [-b] [-B size] [-L] [-S] [--max-depth=N]\n");
 
@@ -20,6 +20,8 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
     mods.dereference = 0;
     mods.separate_dirs = 0;
     mods.max_depth = 0;
+
+    if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
 
     for (int i = 1; argv[i] != NULL; i++)
     {
