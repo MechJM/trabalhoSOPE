@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
+#include <sys/wait.h>
 
 #define STR_LEN 50
 
@@ -20,12 +22,12 @@ long int start; //Start time in milisseconds
 
 struct mods
 {
-    int all;
-    int bytes;
-    int block_size;
-    int count_links;
-    int dereference;
-    int separate_dirs;
+    bool all;
+    bool bytes;
+    double block_size;
+    bool count_links;
+    bool dereference;
+    bool separate_dirs;
     int max_depth;
 }mods;
 

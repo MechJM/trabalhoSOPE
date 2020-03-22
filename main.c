@@ -1,7 +1,8 @@
 #include "global.h"
 #include "calc_time.h"
+#include "disk_usage.h"
 
-char log_filename[STR_LEN] = "log_file"; //setting default value
+//char log_filename[STR_LEN] = "log_file"; //setting default value
 
 int main(int argc,char* argv[]/*,char* envp[]*/)
 {
@@ -12,13 +13,13 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
     //Setting default struct values
     mods.all = 0;
     mods.count_links = 1;
-    mods.block_size = 0;
+    mods.block_size = 1024;
     mods.count_links = 0;
     mods.dereference = 0;
     mods.separate_dirs = 0;
     mods.max_depth = 0;
 
-    if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
+    //if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
 
     for (int i = 1; argv[i] != NULL; i++)
     {
@@ -47,4 +48,8 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
         }
         else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0) strcpy(path,argv[i]);
     }
+
+    calcDir(path);
+
+    return 0;
 }
