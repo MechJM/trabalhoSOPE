@@ -12,9 +12,9 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
 
     //Setting default struct values
     mods.all = 0;
-    mods.count_links = 1;
+    mods.bytes = 0;
     mods.block_size = 1024;
-    mods.count_links = 0;
+    mods.count_links = 1;
     mods.dereference = 0;
     mods.separate_dirs = 0;
     mods.max_depth = 0;

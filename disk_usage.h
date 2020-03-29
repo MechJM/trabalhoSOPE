@@ -3,8 +3,8 @@
 
 #include "global.h"
 
-void calcFile(struct stat *stat_entry,long int *size,char* path);
+long int calcFile(struct stat *stat_entry);
 
-void calcDir(char* path);
+long int calcDir(char* path);
 
 #endif
