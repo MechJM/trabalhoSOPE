@@ -5,6 +5,6 @@
 
 long int calcFile(struct stat *stat_entry);
 
-long int calcDir(char* path);
+long int calcDir(char* path, int depth);
 
 #endif

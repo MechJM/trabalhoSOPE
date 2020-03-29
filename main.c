@@ -49,7 +49,7 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
         else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0) strcpy(path,argv[i]);
     }
 
-    calcDir(path);
+    calcDir(path,0);
 
     return 0;
 }

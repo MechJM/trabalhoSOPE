@@ -11,6 +11,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include <sys/wait.h>
+#include <linux/limits.h>
 
 #define STR_LEN 50
 
