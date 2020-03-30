@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -pedantic
-OBJS=main.o calc_time.o disk_usage.o
+OBJS=main.o calc_time.o disk_usage.o log_file.o
 
 simpledu: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o simpledu
@@ -14,5 +14,8 @@ calc_time.o: calc_time.h global.h calc_time.c
 disk_usage.o: disk_usage.c disk_usage.h global.h
 	$(CC) $(CFLAGS) -c disk_usage.c
 
+log_file.o: log_file.c log_file.h global.h
+	$(CC) $(CFLAGS) -c log_file.c
+
 clean:
-	rm -f *.o *.d *.s *.i
+	rm -f *.o *.d *.s *.i simpledu

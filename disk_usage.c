@@ -23,6 +23,9 @@ long int calcDir(char* path,int depth)
 
     if (S_ISREG(stat_entry.st_mode))
     {
+        char entryContent[STR_LEN];
+        sprintf(entryContent,"%ld\t%s\n",calcFile(&stat_entry),path);
+        printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
         printf("%ld\t%s\n",calcFile(&stat_entry),path);
     }
     else
@@ -46,7 +49,7 @@ long int calcDir(char* path,int depth)
                 continue;
             }
             char full_path[1000];
-            strcpy(full_path,path);
+            //strcpy(full_path,path);
             sprintf(full_path,"%s/%s",path,dentry->d_name);
             if (lstat(full_path, &stat_entry) < 0)
             {
@@ -58,7 +61,13 @@ long int calcDir(char* path,int depth)
             {
                 long int currentFileSize = calcFile(&stat_entry);
                 dirSize += currentFileSize;
-                if (mods.all && ((mods.max_depth != 0 && depth < mods.max_depth) || mods.max_depth == 0)) printf("%ld\t%s\n",currentFileSize,full_path);
+                if (mods.all && ((mods.max_depth != 0 && depth < mods.max_depth) || mods.max_depth == 0)) 
+                {
+                    printf("%ld\t%s\n",currentFileSize,full_path);
+                    char entryContent[STR_LEN];
+                    sprintf(entryContent,"%ld\t%s\n",currentFileSize,full_path);
+                    printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
+                }
             }
             else if (S_ISLNK(stat_entry.st_mode) && !mods.dereference) continue;
             else
@@ -88,6 +97,7 @@ long int calcDir(char* path,int depth)
                 else if (pid > 0)
                 {
                     close(fd[WRITE]);
+                    printLogEntry(log_filename,getInstant(),getpid(),CREATE,arguments);
                     long int currentDirSize_parent;
                     if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
                     {
@@ -98,6 +108,11 @@ long int calcDir(char* path,int depth)
                     if (!mods.separate_dirs) dirSize += currentDirSize_parent;
                     int status;
                     waitpid(pid,&status,WNOHANG);
+                    
+                    char sstatus[STR_LEN];
+                    sprintf(sstatus,"%d",status);
+                    printLogEntry(log_filename,getInstant(),getpid(),EXIT,sstatus);
+
                     if (WEXITSTATUS(status) == 1) return -1;
                 }
                 else 
@@ -108,7 +123,13 @@ long int calcDir(char* path,int depth)
                 strcpy(full_path,path);
             }
         }
-        if ((mods.max_depth != 0 && depth <= mods.max_depth) || mods.max_depth == 0) printf("%ld\t%s\n",dirSize,path);
+        if ((mods.max_depth != 0 && depth <= mods.max_depth) || mods.max_depth == 0) 
+        {
+            printf("%ld\t%s\n",dirSize,path);
+            char entryContent[STR_LEN];
+            sprintf(entryContent,"%ld\t%s\n",dirSize,path);
+            printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
+        }
         return dirSize;
     }
     return -1;

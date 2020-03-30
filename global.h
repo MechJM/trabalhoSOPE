@@ -13,13 +13,27 @@
 #include <sys/wait.h>
 #include <linux/limits.h>
 
-#define STR_LEN 50
+#define STR_LEN 1200
 
 //Pipe macros
 #define READ  0
 #define WRITE 1
 
 long int start; //Start time in milisseconds
+
+char log_filename[STR_LEN];
+char arguments[STR_LEN];
+
+enum action
+{
+    CREATE,
+    EXIT,
+    RECV_SIGNAL,
+    SEND_SIGNAL,
+    RECV_PIPE,
+    SEND_PIPE,
+    ENTRY
+}action;
 
 struct mods
 {

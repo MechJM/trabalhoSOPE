@@ -1,14 +1,21 @@
 #include "global.h"
 #include "calc_time.h"
 #include "disk_usage.h"
+#include "log_file.h"
 
-//char log_filename[STR_LEN] = "log_file"; //setting default value
 
 int main(int argc,char* argv[]/*,char* envp[]*/)
 {
     start = timestamp();
 
+    strcpy(log_filename,"log_filename"); //Setting default value
+
+    if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
+
     if (argc < 2) write(STDERR_FILENO,"Usage: simpledu -l [pathname] [-a] [-b] [-B size] [-L] [-S] [--max-depth=N]\n",76);
+
+    strcpy(arguments,"");
+    sprintf(arguments+strlen(arguments),"%s",argv[0]);
 
     //Setting default struct values
     mods.all = 0;
@@ -18,8 +25,6 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
     mods.dereference = 0;
     mods.separate_dirs = 0;
     mods.max_depth = 0;
-
-    //if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
 
     for (int i = 1; argv[i] != NULL; i++)
     {
@@ -47,7 +52,10 @@ int main(int argc,char* argv[]/*,char* envp[]*/)
             mods.max_depth = atoi(&argv[i][++i2]);
         }
         else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0) strcpy(path,argv[i]);
+        sprintf(arguments+strlen(arguments)," %s",argv[i]);
     }
+
+    printFirstLogEntry(log_filename,getInstant(),getpid(),arguments);
 
     calcDir(path,0);
 
