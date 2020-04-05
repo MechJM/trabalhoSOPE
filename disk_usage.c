@@ -91,6 +91,9 @@ long int calcDir(char* path,int depth)
                         write(STDERR_FILENO,"Couldn't write to pipe.\n",24);
                         exit(1);
                     }
+                    char logContent[STR_LEN] = "";
+                    sprintf(logContent,"%ld",currentDirSize);
+                    printLogEntry(log_filename,getInstant(),getpid(),SEND_PIPE,logContent);
                     close(fd[WRITE]);
                     exit(0);
                 }
@@ -104,6 +107,9 @@ long int calcDir(char* path,int depth)
                         write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
                         exit(1);
                     }
+                    char logContent[STR_LEN] = "";
+                    sprintf(logContent,"%ld",currentDirSize_parent);
+                    printLogEntry(log_filename,getInstant(),getpid(),RECV_PIPE,logContent);
                     close(fd[READ]);
                     if (!mods.separate_dirs) dirSize += currentDirSize_parent;
                     int status;

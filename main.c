@@ -2,11 +2,13 @@
 #include "calc_time.h"
 #include "disk_usage.h"
 #include "log_file.h"
-
+#include "signal_handling.h"
 
 int main(int argc,char* argv[])
 {
     start = timestamp();
+
+    install_handlers();
 
     strcpy(log_filename,"log_filename"); //Setting default value
 
