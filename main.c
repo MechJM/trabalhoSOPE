@@ -4,7 +4,7 @@
 #include "log_file.h"
 
 
-int main(int argc,char* argv[]/*,char* envp[]*/)
+int main(int argc,char* argv[])
 {
     start = timestamp();
 

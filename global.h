@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <linux/limits.h>
+#include <signal.h>
 
 #define STR_LEN 1200
 

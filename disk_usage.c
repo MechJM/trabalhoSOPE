@@ -127,7 +127,7 @@ long int calcDir(char* path,int depth)
         {
             printf("%ld\t%s\n",dirSize,path);
             char entryContent[STR_LEN];
-            sprintf(entryContent,"%ld\t%s\n",dirSize,path);
+            sprintf(entryContent,"%ld\t%s",dirSize,path);
             printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
         }
         return dirSize;

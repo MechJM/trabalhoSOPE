@@ -1,197 +1,332 @@
-711.000000 - 5460 - CREATE -  .
-954.00 - 7481 - CREATE -  .
-0.11 - 28866    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-0.28 - 28867    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-0.40 - 28868    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-1.30 - 28868    - EXIT - 0
-1.37 - 28869    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-3.23 - 28869    - EXIT - 0
-3.37 - 28870    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-3.89 - 28871    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-3.98 - 28871    - EXIT - 64
-4.06 - 28872    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-4.15 - 28872    - EXIT - 64
-4.22 - 28873    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-7.57 - 28874    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-7.94 - 28874    - EXIT - 0
-8.05 - 28873    - EXIT - 64
-8.92 - 28870    - EXIT - 0
-9.05 - 28875    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-9.17 - 28875    - EXIT - 0
-9.23 - 28876    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-9.34 - 28877    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-12.04 - 28878    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-12.16 - 28878    - EXIT - 99
-12.28 - 28879    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-12.78 - 28880    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-12.94 - 28880    - EXIT - 0
-15.46 - 28879    - EXIT - 0
-15.65 - 28877    - EXIT - 0
-15.70 - 28876    - EXIT - 0
-15.78 - 28881    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-15.98 - 28882    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-16.09 - 28882    - EXIT - 0
-16.14 - 28883    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-16.21 - 28883    - EXIT - 0
-16.26 - 28884    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-17.24 - 28884    - EXIT - 0
-17.31 - 28885    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-17.42 - 28885    - EXIT - 0
-17.49 - 28886    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-17.60 - 28886    - EXIT - 0
-17.68 - 28887    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-17.77 - 28887    - EXIT - 0
-17.83 - 28888    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-17.90 - 28888    - EXIT - 0
-17.99 - 28889    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.07 - 28889    - EXIT - 0
-18.13 - 28890    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.19 - 28890    - EXIT - 0
-18.24 - 28891    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.35 - 28891    - EXIT - 0
-18.40 - 28892    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.46 - 28892    - EXIT - 0
-18.53 - 28893    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.61 - 28893    - EXIT - 0
-18.67 - 28894    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-18.73 - 28894    - EXIT - 0
-18.80 - 28895    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-19.63 - 28895    - EXIT - 0
-19.81 - 28896    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-19.92 - 28896    - EXIT - 0
-19.99 - 28897    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-20.05 - 28897    - EXIT - 0
-20.11 - 28898    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-20.60 - 28898    - EXIT - 0
-20.70 - 28899    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-20.89 - 28899    - EXIT - 0
-20.96 - 28900    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-21.04 - 28900    - EXIT - 0
-21.10 - 28901    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-21.34 - 28901    - EXIT - 0
-21.40 - 28902    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-23.86 - 28902    - EXIT - 0
-23.98 - 28903    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-24.42 - 28903    - EXIT - 0
-24.55 - 28904    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-24.91 - 28904    - EXIT - 0
-24.98 - 28905    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-25.16 - 28905    - EXIT - 0
-25.26 - 28906    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-25.34 - 28906    - EXIT - 0
-25.39 - 28907    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-25.47 - 28907    - EXIT - 0
-25.52 - 28908    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-25.63 - 28908    - EXIT - 0
-25.72 - 28909    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-25.84 - 28909    - EXIT - 0
-25.90 - 28910    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.00 - 28910    - EXIT - 0
-26.08 - 28911    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.18 - 28911    - EXIT - 0
-26.24 - 28912    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.31 - 28912    - EXIT - 0
-26.37 - 28913    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.45 - 28913    - EXIT - 0
-26.51 - 28914    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.57 - 28914    - EXIT - 0
-26.62 - 28915    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-26.99 - 28915    - EXIT - 0
-27.05 - 28916    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-33.13 - 28916    - EXIT - 0
-33.25 - 28917    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-33.37 - 28917    - EXIT - 0
-33.48 - 28918    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-35.86 - 28918    - EXIT - 0
-35.95 - 28919    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-36.04 - 28919    - EXIT - 0
-36.10 - 28920    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-36.17 - 28920    - EXIT - 0
-36.24 - 28921    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-36.32 - 28921    - EXIT - 0
-36.38 - 28922    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-37.60 - 28922    - EXIT - 0
-37.75 - 28923    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-37.86 - 28923    - EXIT - 0
-37.95 - 28924    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-38.04 - 28924    - EXIT - 0
-38.11 - 28925    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-38.80 - 28925    - EXIT - 0
-38.96 - 28926    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-40.66 - 28926    - EXIT - 0
-40.79 - 28927    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-40.86 - 28927    - EXIT - 0
-40.95 - 28928    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-41.02 - 28928    - EXIT - 0
-41.09 - 28929    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-41.96 - 28929    - EXIT - 0
-42.07 - 28930    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-42.13 - 28930    - EXIT - 0
-42.18 - 28931    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-42.24 - 28931    - EXIT - 0
-42.29 - 28932    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-42.38 - 28932    - EXIT - 0
-42.43 - 28933    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-42.50 - 28933    - EXIT - 0
-42.57 - 28934    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-42.92 - 28934    - EXIT - 0
-42.99 - 28935    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-43.10 - 28935    - EXIT - 0
-43.17 - 28936    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-43.23 - 28936    - EXIT - 0
-43.29 - 28937    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-44.34 - 28937    - EXIT - 0
-44.45 - 28938    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-44.54 - 28938    - EXIT - 0
-44.65 - 28939    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-44.73 - 28939    - EXIT - 0
-44.80 - 28940    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-46.85 - 28940    - EXIT - 0
-47.01 - 28941    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-47.14 - 28941    - EXIT - 0
-47.23 - 28942    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-51.86 - 28942    - EXIT - 0
-51.97 - 28943    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-52.31 - 28943    - EXIT - 0
-52.38 - 28944    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-52.44 - 28944    - EXIT - 0
-52.51 - 28945    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-52.71 - 28945    - EXIT - 0
-52.76 - 28946    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-52.84 - 28946    - EXIT - 0
-52.90 - 28947    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-55.87 - 28947    - EXIT - 0
-55.97 - 28948    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.11 - 28948    - EXIT - 0
-56.18 - 28949    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.26 - 28949    - EXIT - 0
-56.31 - 28950    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.43 - 28950    - EXIT - 0
-56.48 - 28951    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.55 - 28951    - EXIT - 0
-56.61 - 28952    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.67 - 28952    - EXIT - 0
-56.72 - 28953    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-56.84 - 28953    - EXIT - 0
-56.90 - 28954    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.03 - 28954    - EXIT - 0
-57.09 - 28955    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.15 - 28955    - EXIT - 0
-57.29 - 28881    - EXIT - 0
-57.37 - 28867    - EXIT - 0
-57.46 - 28956    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.55 - 28957    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.63 - 28958    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.72 - 28959    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.81 - 28960    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-57.87 - 28960    - EXIT - 0
-57.96 - 28959    - EXIT - 0
-57.99 - 28958    - EXIT - 99
-58.03 - 28961    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-58.09 - 28961    - EXIT - 99
-63.80 - 28957    - EXIT - 0
-64.01 - 28962    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-64.12 - 28962    - EXIT - 0
-64.26 - 28956    - EXIT - 0
-64.34 - 28963    - CREATE - ./simpledu . -l -L -a --max-depth=2 512
-65.11 - 28963    - EXIT - 0
+0.11 - 1010     - CREATE - ./simpledu .
+0.44 - 1010     - CREATE - ./simpledu .
+0.68 - 1011     - CREATE - ./simpledu .
+1.32 - 1012     - ENTRY - 4	./.git/branches
+1.39 - 1011     - EXIT - 5
+1.56 - 1011     - CREATE - ./simpledu .
+3.45 - 1013     - ENTRY - 8	./.git/info
+3.58 - 1011     - EXIT - 0
+3.65 - 1011     - CREATE - ./simpledu .
+3.77 - 1014     - CREATE - ./simpledu .
+4.17 - 1015     - ENTRY - 12	./.git/refs/heads
+4.24 - 1014     - EXIT - 0
+4.31 - 1014     - CREATE - ./simpledu .
+4.54 - 1016     - ENTRY - 4	./.git/refs/tags
+4.59 - 1014     - EXIT - 0
+4.67 - 1014     - CREATE - ./simpledu .
+4.91 - 1017     - CREATE - ./simpledu .
+4.99 - 1019     - ENTRY - 8	./.git/refs/remotes/origin
+5.03 - 1017     - EXIT - 0
+5.06 - 1017     - ENTRY - 12	./.git/refs/remotes
+5.18 - 1014     - EXIT - 0
+5.20 - 1014     - ENTRY - 32	./.git/refs
+5.24 - 1011     - EXIT - 0
+5.32 - 1011     - CREATE - ./simpledu .
+5.42 - 1020     - ENTRY - 52	./.git/hooks
+5.45 - 1011     - EXIT - 0
+5.53 - 1011     - CREATE - ./simpledu .
+5.63 - 1021     - CREATE - ./simpledu .
+5.74 - 1022     - CREATE - ./simpledu .
+5.86 - 1023     - ENTRY - 12	./.git/logs/refs/heads
+5.89 - 1022     - EXIT - 0
+5.96 - 1022     - CREATE - ./simpledu .
+6.37 - 1024     - CREATE - ./simpledu .
+6.44 - 1025     - ENTRY - 8	./.git/logs/refs/remotes/origin
+6.47 - 1024     - EXIT - 0
+6.49 - 1024     - ENTRY - 12	./.git/logs/refs/remotes
+6.51 - 1022     - EXIT - 0
+6.53 - 1022     - ENTRY - 28	./.git/logs/refs
+6.63 - 1021     - EXIT - 0
+6.66 - 1021     - ENTRY - 44	./.git/logs
+6.76 - 1011     - EXIT - 0
+6.81 - 1011     - CREATE - ./simpledu .
+6.92 - 1027     - CREATE - ./simpledu .
+6.99 - 1028     - ENTRY - 8	./.git/objects/4f
+7.04 - 1027     - EXIT - 0
+7.10 - 1027     - CREATE - ./simpledu .
+7.85 - 1029     - ENTRY - 8	./.git/objects/c0
+7.91 - 1027     - EXIT - 0
+7.99 - 1027     - CREATE - ./simpledu .
+10.30 - 1030     - ENTRY - 8	./.git/objects/51
+11.07 - 1027     - EXIT - 0
+11.15 - 1027     - CREATE - ./simpledu .
+11.29 - 1041     - ENTRY - 8	./.git/objects/c6
+11.39 - 1027     - EXIT - 0
+11.45 - 1027     - CREATE - ./simpledu .
+12.43 - 1042     - ENTRY - 8	./.git/objects/d5
+12.52 - 1027     - EXIT - 0
+12.59 - 1027     - CREATE - ./simpledu .
+12.75 - 1043     - ENTRY - 8	./.git/objects/7a
+12.82 - 1027     - EXIT - 0
+12.87 - 1027     - CREATE - ./simpledu .
+12.95 - 1044     - ENTRY - 8	./.git/objects/f5
+13.04 - 1027     - EXIT - 0
+13.09 - 1027     - CREATE - ./simpledu .
+13.18 - 1045     - ENTRY - 4	./.git/objects/info
+13.22 - 1027     - EXIT - 0
+13.27 - 1027     - CREATE - ./simpledu .
+13.66 - 1046     - ENTRY - 8	./.git/objects/35
+13.74 - 1027     - EXIT - 0
+13.79 - 1027     - CREATE - ./simpledu .
+13.87 - 1047     - ENTRY - 8	./.git/objects/e4
+13.91 - 1027     - EXIT - 0
+13.96 - 1027     - CREATE - ./simpledu .
+14.04 - 1048     - ENTRY - 8	./.git/objects/59
+14.08 - 1027     - EXIT - 0
+14.14 - 1027     - CREATE - ./simpledu .
+14.20 - 1049     - ENTRY - 12	./.git/objects/e8
+14.23 - 1027     - EXIT - 0
+14.29 - 1027     - CREATE - ./simpledu .
+14.38 - 1050     - ENTRY - 8	./.git/objects/a0
+14.42 - 1027     - EXIT - 0
+14.47 - 1027     - CREATE - ./simpledu .
+14.56 - 1051     - ENTRY - 8	./.git/objects/02
+14.60 - 1027     - EXIT - 0
+14.66 - 1027     - CREATE - ./simpledu .
+14.74 - 1052     - ENTRY - 8	./.git/objects/57
+14.78 - 1027     - EXIT - 0
+14.83 - 1027     - CREATE - ./simpledu .
+14.89 - 1053     - ENTRY - 8	./.git/objects/5f
+14.92 - 1027     - EXIT - 0
+15.10 - 1027     - CREATE - ./simpledu .
+15.16 - 1054     - ENTRY - 8	./.git/objects/fe
+15.19 - 1027     - EXIT - 0
+15.24 - 1027     - CREATE - ./simpledu .
+15.30 - 1055     - ENTRY - 8	./.git/objects/d7
+15.34 - 1027     - EXIT - 0
+15.38 - 1027     - CREATE - ./simpledu .
+15.48 - 1056     - ENTRY - 8	./.git/objects/c9
+15.52 - 1027     - EXIT - 0
+15.57 - 1027     - CREATE - ./simpledu .
+15.66 - 1057     - ENTRY - 12	./.git/objects/26
+15.69 - 1027     - EXIT - 0
+15.76 - 1027     - CREATE - ./simpledu .
+16.95 - 1063     - ENTRY - 8	./.git/objects/f9
+17.00 - 1027     - EXIT - 0
+17.06 - 1027     - CREATE - ./simpledu .
+17.16 - 1067     - ENTRY - 8	./.git/objects/13
+17.20 - 1027     - EXIT - 0
+17.25 - 1027     - CREATE - ./simpledu .
+17.65 - 1069     - ENTRY - 8	./.git/objects/a7
+17.69 - 1027     - EXIT - 0
+17.76 - 1027     - CREATE - ./simpledu .
+17.84 - 1071     - ENTRY - 8	./.git/objects/a8
+17.87 - 1027     - EXIT - 0
+17.93 - 1027     - CREATE - ./simpledu .
+18.04 - 1072     - ENTRY - 4	./.git/objects/pack
+18.08 - 1027     - EXIT - 0
+18.13 - 1027     - CREATE - ./simpledu .
+18.23 - 1077     - ENTRY - 12	./.git/objects/d9
+18.26 - 1027     - EXIT - 0
+18.31 - 1027     - CREATE - ./simpledu .
+18.40 - 1078     - ENTRY - 8	./.git/objects/ab
+18.43 - 1027     - EXIT - 0
+18.49 - 1027     - CREATE - ./simpledu .
+18.58 - 1079     - ENTRY - 8	./.git/objects/b0
+18.62 - 1027     - EXIT - 0
+18.67 - 1027     - CREATE - ./simpledu .
+18.77 - 1080     - ENTRY - 8	./.git/objects/23
+18.80 - 1027     - EXIT - 0
+18.86 - 1027     - CREATE - ./simpledu .
+18.93 - 1082     - ENTRY - 12	./.git/objects/c4
+18.97 - 1027     - EXIT - 0
+19.02 - 1027     - CREATE - ./simpledu .
+19.16 - 1084     - ENTRY - 8	./.git/objects/65
+19.20 - 1027     - EXIT - 0
+19.26 - 1027     - CREATE - ./simpledu .
+19.34 - 1085     - ENTRY - 12	./.git/objects/3c
+19.39 - 1027     - EXIT - 0
+19.44 - 1027     - CREATE - ./simpledu .
+19.51 - 1086     - ENTRY - 8	./.git/objects/6f
+19.54 - 1027     - EXIT - 0
+19.60 - 1027     - CREATE - ./simpledu .
+19.66 - 1087     - ENTRY - 8	./.git/objects/89
+19.69 - 1027     - EXIT - 0
+19.77 - 1027     - CREATE - ./simpledu .
+19.82 - 1088     - ENTRY - 8	./.git/objects/0d
+19.86 - 1027     - EXIT - 0
+19.92 - 1027     - CREATE - ./simpledu .
+19.97 - 1089     - ENTRY - 8	./.git/objects/bf
+20.01 - 1027     - EXIT - 0
+20.06 - 1027     - CREATE - ./simpledu .
+20.12 - 1090     - ENTRY - 8	./.git/objects/db
+20.15 - 1027     - EXIT - 0
+20.20 - 1027     - CREATE - ./simpledu .
+20.26 - 1091     - ENTRY - 8	./.git/objects/e1
+20.31 - 1027     - EXIT - 0
+20.37 - 1027     - CREATE - ./simpledu .
+20.42 - 1096     - ENTRY - 8	./.git/objects/4a
+20.46 - 1027     - EXIT - 0
+20.51 - 1027     - CREATE - ./simpledu .
+20.58 - 1097     - ENTRY - 16	./.git/objects/b1
+20.62 - 1027     - EXIT - 0
+20.67 - 1027     - CREATE - ./simpledu .
+20.73 - 1098     - ENTRY - 8	./.git/objects/09
+20.82 - 1027     - EXIT - 0
+21.11 - 1027     - CREATE - ./simpledu .
+21.35 - 1103     - ENTRY - 8	./.git/objects/e5
+21.40 - 1027     - EXIT - 0
+21.47 - 1027     - CREATE - ./simpledu .
+21.53 - 1104     - ENTRY - 8	./.git/objects/72
+21.57 - 1027     - EXIT - 0
+21.62 - 1027     - CREATE - ./simpledu .
+21.79 - 1105     - ENTRY - 8	./.git/objects/33
+21.87 - 1027     - EXIT - 0
+21.94 - 1027     - CREATE - ./simpledu .
+22.03 - 1106     - ENTRY - 12	./.git/objects/ff
+22.07 - 1027     - EXIT - 0
+22.14 - 1027     - CREATE - ./simpledu .
+22.19 - 1109     - ENTRY - 12	./.git/objects/53
+22.23 - 1027     - EXIT - 0
+22.28 - 1027     - CREATE - ./simpledu .
+22.35 - 1110     - ENTRY - 8	./.git/objects/7c
+22.38 - 1027     - EXIT - 0
+22.44 - 1027     - CREATE - ./simpledu .
+22.50 - 1111     - ENTRY - 8	./.git/objects/fd
+22.53 - 1027     - EXIT - 0
+22.62 - 1027     - CREATE - ./simpledu .
+22.70 - 1112     - ENTRY - 8	./.git/objects/7d
+22.74 - 1027     - EXIT - 0
+22.83 - 1027     - CREATE - ./simpledu .
+22.90 - 1113     - ENTRY - 12	./.git/objects/64
+22.94 - 1027     - EXIT - 0
+23.01 - 1027     - CREATE - ./simpledu .
+23.07 - 1114     - ENTRY - 8	./.git/objects/11
+23.11 - 1027     - EXIT - 0
+23.18 - 1027     - CREATE - ./simpledu .
+23.25 - 1115     - ENTRY - 8	./.git/objects/63
+23.28 - 1027     - EXIT - 0
+23.36 - 1027     - CREATE - ./simpledu .
+23.42 - 1116     - ENTRY - 8	./.git/objects/0e
+23.46 - 1027     - EXIT - 0
+23.54 - 1027     - CREATE - ./simpledu .
+23.61 - 1117     - ENTRY - 8	./.git/objects/1d
+23.64 - 1027     - EXIT - 0
+23.75 - 1027     - CREATE - ./simpledu .
+23.87 - 1118     - ENTRY - 8	./.git/objects/9b
+23.91 - 1027     - EXIT - 0
+23.98 - 1027     - CREATE - ./simpledu .
+24.05 - 1119     - ENTRY - 16	./.git/objects/69
+24.09 - 1027     - EXIT - 0
+24.15 - 1027     - CREATE - ./simpledu .
+24.22 - 1120     - ENTRY - 12	./.git/objects/8b
+24.27 - 1027     - EXIT - 0
+24.34 - 1027     - CREATE - ./simpledu .
+24.41 - 1121     - ENTRY - 8	./.git/objects/d3
+24.46 - 1027     - EXIT - 0
+24.53 - 1027     - CREATE - ./simpledu .
+24.61 - 1122     - ENTRY - 8	./.git/objects/d6
+24.65 - 1027     - EXIT - 0
+24.72 - 1027     - CREATE - ./simpledu .
+24.79 - 1123     - ENTRY - 8	./.git/objects/5b
+24.83 - 1027     - EXIT - 0
+24.88 - 1027     - CREATE - ./simpledu .
+24.95 - 1124     - ENTRY - 8	./.git/objects/b2
+24.98 - 1027     - EXIT - 0
+25.04 - 1027     - CREATE - ./simpledu .
+25.10 - 1125     - ENTRY - 12	./.git/objects/e6
+25.13 - 1027     - EXIT - 0
+25.19 - 1027     - CREATE - ./simpledu .
+25.25 - 1126     - ENTRY - 12	./.git/objects/f8
+25.29 - 1027     - EXIT - 0
+25.35 - 1027     - CREATE - ./simpledu .
+25.41 - 1127     - ENTRY - 12	./.git/objects/8e
+25.45 - 1027     - EXIT - 0
+25.51 - 1027     - CREATE - ./simpledu .
+25.57 - 1128     - ENTRY - 12	./.git/objects/ec
+25.61 - 1027     - EXIT - 0
+25.66 - 1027     - CREATE - ./simpledu .
+25.72 - 1129     - ENTRY - 8	./.git/objects/f6
+25.76 - 1027     - EXIT - 0
+25.81 - 1027     - CREATE - ./simpledu .
+25.89 - 1130     - ENTRY - 8	./.git/objects/40
+25.93 - 1027     - EXIT - 0
+25.98 - 1027     - CREATE - ./simpledu .
+26.05 - 1131     - ENTRY - 8	./.git/objects/22
+26.09 - 1027     - EXIT - 0
+26.14 - 1027     - CREATE - ./simpledu .
+26.20 - 1132     - ENTRY - 8	./.git/objects/44
+26.24 - 1027     - EXIT - 0
+26.29 - 1027     - CREATE - ./simpledu .
+26.35 - 1133     - ENTRY - 16	./.git/objects/85
+26.38 - 1027     - EXIT - 0
+26.43 - 1027     - CREATE - ./simpledu .
+26.49 - 1134     - ENTRY - 8	./.git/objects/fc
+26.53 - 1027     - EXIT - 0
+26.58 - 1027     - CREATE - ./simpledu .
+26.65 - 1135     - ENTRY - 220	./.git/objects/94
+26.68 - 1027     - EXIT - 0
+26.73 - 1027     - CREATE - ./simpledu .
+26.79 - 1136     - ENTRY - 8	./.git/objects/32
+26.83 - 1027     - EXIT - 0
+26.88 - 1027     - CREATE - ./simpledu .
+26.94 - 1137     - ENTRY - 12	./.git/objects/0b
+26.97 - 1027     - EXIT - 0
+27.03 - 1027     - CREATE - ./simpledu .
+27.09 - 1138     - ENTRY - 8	./.git/objects/ed
+27.13 - 1027     - EXIT - 0
+27.18 - 1027     - CREATE - ./simpledu .
+27.24 - 1139     - ENTRY - 8	./.git/objects/82
+27.27 - 1027     - EXIT - 0
+27.32 - 1027     - CREATE - ./simpledu .
+27.38 - 1140     - ENTRY - 8	./.git/objects/af
+27.42 - 1027     - EXIT - 0
+27.47 - 1027     - CREATE - ./simpledu .
+27.53 - 1141     - ENTRY - 8	./.git/objects/ea
+27.57 - 1027     - EXIT - 0
+27.62 - 1027     - CREATE - ./simpledu .
+27.67 - 1142     - ENTRY - 8	./.git/objects/df
+27.71 - 1027     - EXIT - 0
+27.77 - 1027     - CREATE - ./simpledu .
+27.83 - 1143     - ENTRY - 8	./.git/objects/31
+27.86 - 1027     - EXIT - 0
+27.92 - 1027     - CREATE - ./simpledu .
+27.98 - 1144     - ENTRY - 8	./.git/objects/74
+28.02 - 1027     - EXIT - 0
+28.07 - 1027     - CREATE - ./simpledu .
+28.13 - 1145     - ENTRY - 8	./.git/objects/e7
+28.16 - 1027     - EXIT - 0
+28.22 - 1027     - CREATE - ./simpledu .
+28.27 - 1146     - ENTRY - 8	./.git/objects/aa
+28.31 - 1027     - EXIT - 0
+28.36 - 1027     - CREATE - ./simpledu .
+28.42 - 1147     - ENTRY - 12	./.git/objects/6d
+28.45 - 1027     - EXIT - 0
+28.50 - 1027     - CREATE - ./simpledu .
+28.58 - 1148     - ENTRY - 8	./.git/objects/f2
+28.61 - 1027     - EXIT - 0
+28.66 - 1027     - CREATE - ./simpledu .
+28.72 - 1150     - ENTRY - 8	./.git/objects/60
+28.75 - 1027     - EXIT - 0
+28.80 - 1027     - CREATE - ./simpledu .
+28.86 - 1151     - ENTRY - 8	./.git/objects/b9
+28.89 - 1027     - EXIT - 0
+28.94 - 1027     - CREATE - ./simpledu .
+29.00 - 1152     - ENTRY - 8	./.git/objects/8d
+29.03 - 1027     - EXIT - 0
+29.05 - 1027     - ENTRY - 996	./.git/objects
+29.07 - 1011     - EXIT - 0
+29.10 - 1011     - ENTRY - 1168	./.git
+29.21 - 1010     - EXIT - 0
+29.27 - 1010     - CREATE - ./simpledu .
+29.36 - 1153     - CREATE - ./simpledu .
+29.46 - 1154     - CREATE - ./simpledu .
+29.55 - 1158     - CREATE - ./simpledu .
+29.63 - 1159     - ENTRY - 8	./test_dir/D1/Db/Dx
+29.66 - 1158     - EXIT - 0
+29.71 - 1158     - ENTRY - 16	./test_dir/D1/Db
+29.73 - 1154     - EXIT - 0
+29.79 - 1154     - CREATE - ./simpledu .
+31.81 - 1162     - ENTRY - 8	./test_dir/D1/Da
+31.86 - 1154     - EXIT - 0
+31.89 - 1154     - ENTRY - 36	./test_dir/D1
+31.92 - 1153     - EXIT - 5
+32.04 - 1163     - ENTRY - 4	./test_dir/D2
+32.06 - 1153     - CREATE - ./simpledu .
+32.09 - 1153     - EXIT - 5
+32.11 - 1153     - ENTRY - 48	./test_dir
+32.20 - 1010     - EXIT - 0
+32.25 - 1010     - CREATE - ./simpledu .
+32.31 - 1164     - ENTRY - 8	./.vscode
+32.34 - 1010     - EXIT - 0
+32.37 - 1010     - ENTRY - 1588	.
