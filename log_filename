@@ -1,45 +1,45 @@
-0.08 - 31977    - CREATE - ./simpledu -a test_dir
-0.31 - 31977    - CREATE - ./simpledu -a test_dir
-0.46 - 31979    - CREATE - ./simpledu -a test_dir
-0.82 - 31980    - ENTRY - 4	test_dir/D1/Db/archive.zip
+0.75 - 4691     - CREATE - ./simpledu -a test_dir
+1.00 - 4691     - CREATE - ./simpledu -a test_dir
+1.17 - 4692     - CREATE - ./simpledu -a test_dir
+1.28 - 4693     - ENTRY - 4	test_dir/D1/Db/archive.zip
 
-0.86 - 31980    - ENTRY - 0	test_dir/D1/Db/pkg.deb
+1.32 - 4693     - ENTRY - 0	test_dir/D1/Db/pkg.deb
 
-0.96 - 31980    - CREATE - ./simpledu -a test_dir
-1.06 - 31981    - ENTRY - 4	test_dir/D1/Db/Dx/doc.pdf
+1.40 - 4693     - CREATE - ./simpledu -a test_dir
+1.54 - 4694     - ENTRY - 4	test_dir/D1/Db/Dx/doc.pdf
 
-1.08 - 31981    - ENTRY - 0	test_dir/D1/Db/Dx/output.log
+1.60 - 4694     - ENTRY - 0	test_dir/D1/Db/Dx/output.log
 
-1.10 - 31981    - ENTRY - 8	test_dir/D1/Db/Dx
-1.11 - 31981    - SEND_PIPE - 8
-1.15 - 31980    - RECV_PIPE - 8
-1.19 - 31980    - EXIT - 0
-1.21 - 31980    - ENTRY - 16	test_dir/D1/Db
-1.23 - 31980    - SEND_PIPE - 16
-1.26 - 31979    - RECV_PIPE - 16
-1.29 - 31979    - EXIT - 0
-1.31 - 31979    - ENTRY - 4	test_dir/D1/dep.d
+1.62 - 4694     - ENTRY - 8	test_dir/D1/Db/Dx
+1.64 - 4694     - SEND_PIPE - 8
+1.65 - 4693     - RECV_PIPE - 8
+1.67 - 4693     - EXIT - 0
+1.70 - 4693     - ENTRY - 16	test_dir/D1/Db
+1.72 - 4693     - SEND_PIPE - 16
+1.72 - 4692     - RECV_PIPE - 16
+1.76 - 4692     - EXIT - 0
+1.78 - 4692     - ENTRY - 4	test_dir/D1/dep.d
 
-1.33 - 31979    - ENTRY - 4	test_dir/D1/src.c
+1.80 - 4692     - ENTRY - 4	test_dir/D1/src.c
 
-1.39 - 31979    - CREATE - ./simpledu -a test_dir
-1.55 - 31982    - ENTRY - 4	test_dir/D1/Da/F3.BIN
+1.87 - 4692     - CREATE - ./simpledu -a test_dir
+2.11 - 4695     - ENTRY - 4	test_dir/D1/Da/F3.BIN
 
-1.57 - 31982    - ENTRY - 8	test_dir/D1/Da
-1.58 - 31982    - SEND_PIPE - 8
-1.59 - 31979    - RECV_PIPE - 8
-1.61 - 31979    - EXIT - 0
-1.63 - 31979    - ENTRY - 36	test_dir/D1
-1.65 - 31979    - SEND_PIPE - 36
-1.69 - 31977    - RECV_PIPE - 36
-1.71 - 31977    - EXIT - 4096
-1.74 - 31977    - ENTRY - 4	test_dir/f.txt
+2.15 - 4695     - ENTRY - 8	test_dir/D1/Da
+2.18 - 4695     - SEND_PIPE - 8
+2.18 - 4692     - RECV_PIPE - 8
+2.20 - 4692     - EXIT - 0
+2.23 - 4692     - ENTRY - 36	test_dir/D1
+2.25 - 4692     - SEND_PIPE - 36
+2.25 - 4691     - RECV_PIPE - 36
+2.29 - 4691     - EXIT - 4096
+2.31 - 4691     - ENTRY - 4	test_dir/f.txt
 
-1.96 - 31977    - CREATE - ./simpledu -a test_dir
-2.02 - 31983    - ENTRY - 0	test_dir/D2/F2.BIN
+2.39 - 4691     - CREATE - ./simpledu -a test_dir
+2.61 - 4696     - ENTRY - 0	test_dir/D2/F2.BIN
 
-2.04 - 31983    - ENTRY - 4	test_dir/D2
-2.06 - 31983    - SEND_PIPE - 4
-2.08 - 31977    - RECV_PIPE - 4
-2.10 - 31977    - EXIT - 4096
-2.12 - 31977    - ENTRY - 48	test_dir
+2.65 - 4696     - ENTRY - 4	test_dir/D2
+2.67 - 4696     - SEND_PIPE - 4
+2.67 - 4691     - RECV_PIPE - 4
+2.69 - 4691     - EXIT - 4096
+2.71 - 4691     - ENTRY - 48	test_dir
