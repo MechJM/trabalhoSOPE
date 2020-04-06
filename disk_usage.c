@@ -87,6 +87,15 @@ long int calcDir(char* path,int depth)
 
                 if (pid == 0)
                 {
+                    if (getpid() != ancestor)
+                    {
+                        uninstall_handlers();
+                    }
+                    unblock_signal(SIGINT);
+
+
+
+
                     close(fd[READ]);
                     long int currentDirSize = calcDir(full_path,++depth);
                     if (currentDirSize == -1) exit(2);
@@ -103,6 +112,12 @@ long int calcDir(char* path,int depth)
                 }
                 else if (pid > 0)
                 {
+                    unblock_signal(SIGINT);
+                    //if (getpid() == ancestor) block_signal(SIGSTOP);
+
+
+
+
                     close(fd[WRITE]);
                     printLogEntry(log_filename,getInstant(),getpid(),CREATE,arguments);
                     long int currentDirSize_parent;

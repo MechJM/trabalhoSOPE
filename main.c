@@ -8,11 +8,16 @@ int main(int argc,char* argv[])
 {
     start = timestamp();
 
-/*
-    install_handlers();
 
+
+
+    install_handlers();
     ancestor = getpid();
-*/
+    block_signal(SIGINT);
+
+
+
+
     strcpy(log_filename,"log_filename"); //Setting default value
 
     if (getenv("LOG_FILENAME") != NULL) strcpy(log_filename,getenv("LOG_FILENAME"));
