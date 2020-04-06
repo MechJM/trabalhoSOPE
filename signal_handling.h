@@ -11,4 +11,6 @@ void sigterm_handler(int signo);
 
 void install_handlers();
 
+void uninstall_handlers();
+
 #endif

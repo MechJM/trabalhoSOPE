@@ -2,8 +2,9 @@
 
 void sigint_handler(int signo)
 {
+    fprintf(stderr,"Cheguei aqui.\n");
     if (signo != SIGINT) fprintf(stderr,"This handler shouldn't have been called.\n");
-    pid_t groudPid = getpgid(getpid());
+    /*pid_t groudPid = getpgid(getpid());
     kill(groudPid,SIGSTOP);
     char answer[STR_LEN];
     do{
@@ -16,7 +17,7 @@ void sigint_handler(int signo)
         read(STDIN_FILENO,answer,3);
         if (strcmp(answer,"yes") == 0) {sigcont_handler(SIGCONT); break;}
         else if (strcmp(answer,"no") == 0) {sigterm_handler(SIGTERM); break;}
-    } while (1);
+    } while (1);*/
 }
 
 void sigcont_handler(int signo)
@@ -53,4 +54,15 @@ void install_handlers()
     action3.sa_handler = sigterm_handler;
     action3.sa_flags = 0;
     sigaction(SIGTERM,&action3,NULL);
+}
+
+void uninstall_handlers()
+{
+    struct sigaction action;
+
+    sigemptyset(&action.sa_mask);
+    //sigaddset(&action.sa_mask,SIGINT);
+    action.sa_handler = SIG_IGN;
+    action.sa_flags = 0;
+    sigaction(SIGINT,&action,NULL);
 }

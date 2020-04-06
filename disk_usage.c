@@ -1,13 +1,16 @@
 #include "disk_usage.h"
+#include "signal_handling.h"
 
 long int calcFile(struct stat *stat_entry)
 {
-    if (!mods.bytes) 
+    
+    if (!mods.bytes) //b pequeno desligado 
     {
         return (long int)(stat_entry->st_blocks/(double)(mods.block_size/512));
     }
-    else
+    else //b pequeno ativo
     {
+        //if (mods.block_size != 1024) return (long int)(stat_entry->st_size/(double)(mods.block_size/512));
         return (long int) stat_entry->st_size;
     }
 }
@@ -42,10 +45,14 @@ long int calcDir(char* path,int depth)
         struct dirent *dentry;
         while ((dentry = readdir(dirp)) != NULL)
         {
-            if (strcmp(dentry->d_name,".") == 0 || strcmp(dentry->d_name,"..") == 0) 
+            if (strcmp(dentry->d_name,"..") == 0) continue;
+            else if (strcmp(dentry->d_name,".") == 0) 
             {
-                if (mods.bytes) dirSize += 2048 * (1024/mods.block_size);
-                else dirSize += 2 * (1024/mods.block_size);
+                long int addAmount;
+                if (mods.bytes) addAmount = 4096;
+                else addAmount = 4 * (1024/mods.block_size);
+            
+                dirSize += addAmount;
                 continue;
             }
             char full_path[1000];
@@ -57,7 +64,7 @@ long int calcDir(char* path,int depth)
                 exit(1);
             }
 
-            if (S_ISREG(stat_entry.st_mode))
+            if (S_ISREG(stat_entry.st_mode) || (S_ISLNK(stat_entry.st_mode) && !mods.dereference))
             {
                 long int currentFileSize = calcFile(&stat_entry);
                 dirSize += currentFileSize;
@@ -69,7 +76,6 @@ long int calcDir(char* path,int depth)
                     printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
                 }
             }
-            else if (S_ISLNK(stat_entry.st_mode) && !mods.dereference) continue;
             else
             {
                 int fd[2];
@@ -78,11 +84,12 @@ long int calcDir(char* path,int depth)
                     write(STDERR_FILENO,"Couldn't create pipe.\n",22);
                     exit(1);
                 }
-
+                fflush(stdout);
                 pid_t pid = fork();
 
                 if (pid == 0)
                 {
+                    uninstall_handlers();
                     close(fd[READ]);
                     long int currentDirSize = calcDir(full_path,++depth);
                     if (currentDirSize == -1) exit(2);
