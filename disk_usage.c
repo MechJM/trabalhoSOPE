@@ -55,7 +55,15 @@ long int calcDir(char* path,int depth)
             }
             char full_path[1000];
             //strcpy(full_path,path);
-            sprintf(full_path,"%s/%s",path,dentry->d_name);
+
+            //Removar barra extra do output
+            char copy_path[700] = "";
+            strcpy(copy_path,path);
+            if (strcmp(copy_path + strlen(copy_path) - 1,"/") == 0) copy_path[strlen(copy_path) - 1] = 0;
+            //Fim remocao
+
+
+            sprintf(full_path,"%s/%s",copy_path,dentry->d_name);
             if (lstat(full_path, &stat_entry) < 0)
             {
                 write(STDERR_FILENO,"Couldn't get entry statistics 2.\n",33);
