@@ -70,15 +70,15 @@ void uninstall_handlers()
 void block_signal(int signo)
 {
     sigset_t mask;
-    sigprocmask(0,NULL,&mask);
-    sigaddset(&mask,signo);
+    sigemptyset(&mask);
+    sigaddset(&mask,SIGINT);
     sigprocmask(SIG_BLOCK,&mask,NULL);
 }
 
 void unblock_signal(int signo)
 {
     sigset_t mask;
-    sigprocmask(0,NULL,&mask);
-    sigdelset(&mask,signo);
+    sigemptyset(&mask);
+    sigaddset(&mask,SIGINT);
     sigprocmask(SIG_UNBLOCK,&mask,NULL);
 }
