@@ -113,7 +113,7 @@ long int calcDir(char* path,int depth)
                 else if (pid > 0)
                 {
                     unblock_signal(SIGINT);
-                    //if (getpid() == ancestor) block_signal(SIGSTOP);
+                    
 
 
 

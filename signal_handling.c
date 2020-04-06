@@ -36,7 +36,7 @@ void sigterm_handler(int signo)
 
 void install_handlers()
 {
-    struct sigaction action,action2,action3,action4;
+    struct sigaction action,action2,action3;
 
     sigemptyset(&action.sa_mask);
     //sigaddset(&action.sa_mask,SIGINT);
@@ -53,28 +53,17 @@ void install_handlers()
     action3.sa_handler = sigterm_handler;
     action3.sa_flags = 0;
     sigaction(SIGTERM,&action3,NULL);
-
-    sigemptyset(&action4.sa_mask);
-    action4.sa_handler = SIG_IGN;
-    action4.sa_flags = 0;
-    sigaction(SIGSTOP,&action4,NULL);
 }
 
 void uninstall_handlers()
 {
-    struct sigaction action,action2;
+    struct sigaction action;
 
     sigemptyset(&action.sa_mask);
     //sigaddset(&action.sa_mask,SIGINT);
     action.sa_handler = SIG_DFL;
     action.sa_flags = 0;
     sigaction(SIGINT,&action,NULL);
-
-    sigemptyset(&action2.sa_mask);
-    //sigaddset(&action.sa_mask,SIGINT);
-    action2.sa_handler = SIG_DFL;
-    action2.sa_flags = 0;
-    sigaction(SIGSTOP,&action2,NULL);
 }
 
 void block_signal(int signo)
