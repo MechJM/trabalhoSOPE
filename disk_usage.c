@@ -3,14 +3,12 @@
 
 long int calcFile(struct stat *stat_entry)
 {
-    
-    if (!mods.bytes) //b pequeno desligado 
+    if (!mods.bytes)  
     {
         return (long int)(stat_entry->st_blocks/(double)(mods.block_size/512));
     }
-    else //b pequeno ativo
+    else 
     {
-        //if (mods.block_size != 1024) return (long int)(stat_entry->st_size/(double)(mods.block_size/512));
         return (long int) stat_entry->st_size;
     }
 }
@@ -89,7 +87,6 @@ long int calcDir(char* path,int depth)
 
                 if (pid == 0)
                 {
-                    uninstall_handlers();
                     close(fd[READ]);
                     long int currentDirSize = calcDir(full_path,++depth);
                     if (currentDirSize == -1) exit(2);

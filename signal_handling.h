@@ -13,4 +13,8 @@ void install_handlers();
 
 void uninstall_handlers();
 
+void block_signal(int signo);
+
+void unblock_signal(int signo);
+
 #endif

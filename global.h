@@ -25,7 +25,7 @@ long int start; //Start time in milisseconds
 char log_filename[STR_LEN];
 char arguments[STR_LEN];
 
-
+pid_t ancestor;
 
 enum action
 {

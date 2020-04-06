@@ -62,7 +62,23 @@ void uninstall_handlers()
 
     sigemptyset(&action.sa_mask);
     //sigaddset(&action.sa_mask,SIGINT);
-    action.sa_handler = SIG_IGN;
+    action.sa_handler = SIG_DFL;
     action.sa_flags = 0;
     sigaction(SIGINT,&action,NULL);
+}
+
+void block_signal(int signo)
+{
+    sigset_t mask;
+    sigprocmask(0,NULL,&mask);
+    sigaddset(&mask,signo);
+    sigprocmask(SIG_BLOCK,&mask,NULL);
+}
+
+void unblock_signal(int signo)
+{
+    sigset_t mask;
+    sigprocmask(0,NULL,&mask);
+    sigdelset(&mask,signo);
+    sigprocmask(SIG_UNBLOCK,&mask,NULL);
 }
