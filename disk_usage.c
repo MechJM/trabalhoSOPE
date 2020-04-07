@@ -100,7 +100,7 @@ long int calcDir(char* path,int depth)
                         uninstall_handlers();
                     }
                     unblock_signal(SIGINT);
-
+                    if (getppid() == ancestor) setpgid(0,0);
 
 
 
@@ -121,7 +121,7 @@ long int calcDir(char* path,int depth)
                 else if (pid > 0)
                 {
                     unblock_signal(SIGINT);
-                    
+                    if (getpid() == ancestor) firstLevelChildren[childIndex++] = pid;
 
 
 

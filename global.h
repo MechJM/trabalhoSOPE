@@ -20,12 +20,20 @@
 #define READ  0
 #define WRITE 1
 
-long int start; //Start time in milisseconds
 
+long int start; //Start time in milisseconds for logs
+
+//Arrays used for logs
 char log_filename[STR_LEN];
 char arguments[STR_LEN];
 
+
+
+
 pid_t ancestor;
+pid_t firstLevelChildren[100];
+int childIndex;
+
 
 enum action
 {

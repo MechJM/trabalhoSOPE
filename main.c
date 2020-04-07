@@ -14,7 +14,7 @@ int main(int argc,char* argv[])
     install_handlers();
     ancestor = getpid();
     block_signal(SIGINT);
-
+    childIndex = 0;
 
 
 

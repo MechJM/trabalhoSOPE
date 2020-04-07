@@ -3,9 +3,11 @@
 void sigint_handler(int signo)
 {
     if (signo != SIGINT) fprintf(stderr,"This handler shouldn't have been called.\n");
-    pid_t groupPid = getpgid(getpid());
-    kill(groupPid,SIGSTOP);
-    char answer[STR_LEN];
+    //pid_t groupPid = getpgid(getpid());
+    for (int i = 0; i < childIndex; i++) kill(firstLevelChildren[i],SIGSTOP);
+    sleep(1);
+    //kill(groupPid,SIGSTOP);
+    char answer[4];
     do{
         /*char pid[STR_LEN] = "";
         sprintf(pid,"%d",getpid());
@@ -13,9 +15,9 @@ void sigint_handler(int signo)
         write(STDOUT_FILENO,pid,sizeof(pid));
         write(STDOUT_FILENO,"\n",1);*/
         write(STDOUT_FILENO,"The program has been paused. Would you like to resume? (yes/no): \n",66);
-        read(STDIN_FILENO,answer,3);
-        if (strcmp(answer,"yes") == 0) {sigcont_handler(SIGCONT); break;}
-        else if (strcmp(answer,"no") == 0) {sigterm_handler(SIGTERM); break;}
+        read(STDIN_FILENO,answer,4);
+        if (strcmp(answer,"yes\n") == 0) {sigcont_handler(SIGCONT); break;}
+        else if (strcmp(answer,"no\n") == 0) {sigterm_handler(SIGTERM); break;}
     } while (1);
 }
 
