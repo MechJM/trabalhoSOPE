@@ -69,5 +69,7 @@ int main(int argc,char* argv[])
 
     calcDir(path,0);
 
+
+    printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0");
     return 0;
 }

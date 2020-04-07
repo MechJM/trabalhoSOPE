@@ -44,6 +44,6 @@ void printLogEntry(char* log_filename, double instant, pid_t pid,enum action act
         break;
     }
 
-    fprintf(logPtr,"%.2F - %-8d - %s - %s\n",instant,pid,action_string,info);
+    fprintf(logPtr,"%.2F - %8d - %s - %s\n",instant,pid,action_string,info);
     fclose(logPtr);
 }

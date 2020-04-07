@@ -19,6 +19,7 @@ long int calcDir(char* path,int depth)
     if (lstat(path,&stat_entry) < 0)
     {
         write(STDERR_FILENO,"Couldn't get entry statistics.\n",31);
+        printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
         exit(1);
     }
 
@@ -37,6 +38,7 @@ long int calcDir(char* path,int depth)
         if ((dirp = opendir(path)) == NULL) 
         {
             write(STDERR_FILENO,"Couldn't open directory.\n",25);
+            printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
             exit(1);
         }
 
@@ -66,6 +68,7 @@ long int calcDir(char* path,int depth)
             if (lstat(full_path, &stat_entry) < 0)
             {
                 write(STDERR_FILENO,"Couldn't get entry statistics 2.\n",33);
+                printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                 exit(1);
             }
 
@@ -87,6 +90,7 @@ long int calcDir(char* path,int depth)
                 if (pipe(fd) < 0) 
                 {
                     write(STDERR_FILENO,"Couldn't create pipe.\n",22);
+                    printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                     exit(1);
                 }
                 fflush(stdout);
@@ -105,16 +109,21 @@ long int calcDir(char* path,int depth)
 
                     close(fd[READ]);
                     long int currentDirSize = calcDir(full_path,++depth);
-                    if (currentDirSize == -1) exit(2);
+                    if (currentDirSize == -1) {printLogEntry(log_filename,getInstant(),getpid(),EXIT,"2"); exit(2);}
                     if (write(fd[WRITE],&currentDirSize,sizeof(currentDirSize)) < 0)
                     {
                         write(STDERR_FILENO,"Couldn't write to pipe.\n",24);
+                        printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                         exit(1);
                     }
                     char logContent[STR_LEN] = "";
                     sprintf(logContent,"%ld",currentDirSize);
                     printLogEntry(log_filename,getInstant(),getpid(),SEND_PIPE,logContent);
                     close(fd[WRITE]);
+
+
+
+                    printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0");
                     exit(0);
                 }
                 else if (pid > 0)
@@ -139,6 +148,7 @@ long int calcDir(char* path,int depth)
                     if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
                     {
                         write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
+                        printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                         exit(1);
                     }
 
@@ -153,20 +163,13 @@ long int calcDir(char* path,int depth)
                     int status;
                     waitpid(pid,&status,WNOHANG);
 
-                    
-                    
-                    char sstatus[STR_LEN];
-                    sprintf(sstatus,"%d",status);
-                    printLogEntry(log_filename,getInstant(),getpid(),EXIT,sstatus);
-
-
-                    
 
                     if (WEXITSTATUS(status) == 1) return -1;
                 }
                 else 
                 {
                     write(STDERR_FILENO,"Couldn't create child process.\n",31);
+                    printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                     exit(1);
                 }
                 strcpy(full_path,path);

@@ -13,7 +13,7 @@ void sigint_handler(int signo)
         read(STDIN_FILENO,answer,2);
         //printf("Answer: %s",answer);
         if (strcmp(answer,"n\n") == 0) {send_signals_to_children(SIGCONT); break;}
-        else if (strcmp(answer,"y\n") == 0) {send_signals_to_children(SIGTERM); exit(0); break;}
+        else if (strcmp(answer,"y\n") == 0) {send_signals_to_children(SIGTERM); printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0"); exit(0); break;}
     } while (1);
 }
 
