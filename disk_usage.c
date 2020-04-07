@@ -54,7 +54,6 @@ long int calcDir(char* path,int depth)
                 continue;
             }
             char full_path[1000];
-            //strcpy(full_path,path);
 
             //Removar barra extra do output
             char copy_path[700] = "";

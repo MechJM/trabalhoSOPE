@@ -1,6 +1,3 @@
 48	test_dir/
 36	test_dir/D1
-8	test_dir/D1/Da
-16	test_dir/D1/Db
-8	test_dir/D1/Db/Dx
 4	test_dir/D2
