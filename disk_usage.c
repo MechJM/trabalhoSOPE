@@ -98,6 +98,8 @@ long int calcDir(char* path,int depth)
 
                 if (pid == 0)
                 {
+                    close(fd[READ]);
+
                     if (getpid() != ancestor)
                     {
                         uninstall_handler(SIGINT);
@@ -107,7 +109,7 @@ long int calcDir(char* path,int depth)
 
 
 
-                    close(fd[READ]);
+                    
 
                     char entryContent[STR_LEN] = "";
                     strcpy(entryContent,arguments);
@@ -123,11 +125,11 @@ long int calcDir(char* path,int depth)
                         printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
                         exit(1);
                     }
+                    close(fd[WRITE]);
+                    
                     char logContent[STR_LEN] = "";
                     sprintf(logContent,"%ld",currentDirSize);
                     printLogEntry(log_filename,getInstant(),getpid(),SEND_PIPE,logContent);
-                    close(fd[WRITE]);
-
 
 
                     printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0");
@@ -148,20 +150,32 @@ long int calcDir(char* path,int depth)
 
                     close(fd[WRITE]);
                     long int currentDirSize_parent;
-                    if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
-                    {
-                        write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
-                        printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
-                        exit(1);
-                    }
 
                     
-
-
+                    if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
+                    {
+                        if (errno == EINTR)  
+                        {
+                            if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
+                            {
+                                write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
+                                printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
+                                exit(1);
+                            }
+                        }
+                        else 
+                        { 
+                            write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
+                            printLogEntry(log_filename,getInstant(),getpid(),EXIT,"1");
+                            exit(1);
+                        }
+                    }
+                    close(fd[READ]);
+                    
                     char logContent[STR_LEN] = "";
                     sprintf(logContent,"%ld",currentDirSize_parent);
                     printLogEntry(log_filename,getInstant(),getpid(),RECV_PIPE,logContent);
-                    close(fd[READ]);
+                    
                     if (!mods.separate_dirs) dirSize += currentDirSize_parent;
                     int status;
                     waitpid(pid,&status,WNOHANG);
