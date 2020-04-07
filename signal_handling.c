@@ -1,17 +1,19 @@
 #include "signal_handling.h"
+#include "log_file.h"
+#include "calc_time.h"
 
 void sigint_handler(int signo)
 {
+    printLogEntry(log_filename,getInstant(),getpid(),RECV_SIGNAL,"SIGINT");
     if (signo != SIGINT) fprintf(stderr,"This handler shouldn't have been called.\n");
     send_signals_to_children(SIGSTOP);
-    sleep(1);
-    char answer[5];
+    char answer[2];
     do{
-        write(STDOUT_FILENO,"The program has been paused. Would you like to resume? (yes/no): \n",66);
-        read(STDIN_FILENO,answer,4);
+        write(STDOUT_FILENO,"The program has been paused. Would you like to terminate? (y/n): \n",66);
+        read(STDIN_FILENO,answer,2);
         //printf("Answer: %s",answer);
-        if (strcmp(answer,"yes\n") == 0) {send_signals_to_children(SIGCONT); break;}
-        else if (strcmp(answer,"no\n") == 0) {send_signals_to_children(SIGTERM); exit(0); break;}
+        if (strcmp(answer,"n\n") == 0) {send_signals_to_children(SIGCONT); break;}
+        else if (strcmp(answer,"y\n") == 0) {send_signals_to_children(SIGTERM); exit(0); break;}
     } while (1);
 }
 
@@ -54,5 +56,11 @@ void unblock_signal(int signo)
 
 void send_signals_to_children(int signo)
 {
-    for (int i = 0; i < childIndex; i++) kill(firstLevelChildren[i],signo);
+    for (int i = 0; i < childIndex; i++) 
+    {
+        kill(-firstLevelChildren[i],signo); 
+        char entryContent[STR_LEN] = "";
+        sprintf(entryContent,"%d %d",signo,-firstLevelChildren[i]);
+        printLogEntry(log_filename,getInstant(),getpid(),SEND_SIGNAL,entryContent);
+    }
 }

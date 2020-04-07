@@ -119,20 +119,32 @@ long int calcDir(char* path,int depth)
                 }
                 else if (pid > 0)
                 {
+                    //printf("Cheguei aqui\n");
+
                     unblock_signal(SIGINT);
+                    
+                    //printf("Cheguei aqui 2\n");
+
                     if (getpid() == ancestor) firstLevelChildren[childIndex++] = pid;
 
-
-
+                   
+                    
 
                     close(fd[WRITE]);
                     printLogEntry(log_filename,getInstant(),getpid(),CREATE,arguments);
                     long int currentDirSize_parent;
+
+                    
+
                     if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
                     {
                         write(STDERR_FILENO,"Couldn't read from pipe.\n",25);
                         exit(1);
                     }
+
+                    
+
+
                     char logContent[STR_LEN] = "";
                     sprintf(logContent,"%ld",currentDirSize_parent);
                     printLogEntry(log_filename,getInstant(),getpid(),RECV_PIPE,logContent);
@@ -140,10 +152,15 @@ long int calcDir(char* path,int depth)
                     if (!mods.separate_dirs) dirSize += currentDirSize_parent;
                     int status;
                     waitpid(pid,&status,WNOHANG);
+
+                    
                     
                     char sstatus[STR_LEN];
                     sprintf(sstatus,"%d",status);
                     printLogEntry(log_filename,getInstant(),getpid(),EXIT,sstatus);
+
+
+                    
 
                     if (WEXITSTATUS(status) == 1) return -1;
                 }
