@@ -7,11 +7,11 @@ void sigint_handler(int signo)
     kill(groupPid,SIGSTOP);
     char answer[STR_LEN];
     do{
-        char pid[STR_LEN] = "";
+        /*char pid[STR_LEN] = "";
         sprintf(pid,"%d",getpid());
         write(STDOUT_FILENO,"\n",1);
         write(STDOUT_FILENO,pid,sizeof(pid));
-        write(STDOUT_FILENO,"\n",1);
+        write(STDOUT_FILENO,"\n",1);*/
         write(STDOUT_FILENO,"The program has been paused. Would you like to resume? (yes/no): \n",66);
         read(STDIN_FILENO,answer,3);
         if (strcmp(answer,"yes") == 0) {sigcont_handler(SIGCONT); break;}
