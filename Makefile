@@ -21,4 +21,4 @@ signal_handling.o: signal_handling.c global.h signal_handling.h
 	$(CC) $(CFLAGS) -c signal_handling.c
 
 clean:
-	rm -f *.o *.d *.s *.i simpledu
+	rm -f *.o *.d *.s *.i
