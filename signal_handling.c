@@ -9,7 +9,7 @@ void sigint_handler(int signo)
     do{
         write(STDOUT_FILENO,"The program has been paused. Would you like to resume? (yes/no): \n",66);
         read(STDIN_FILENO,answer,4);
-        printf("Answer: %s",answer);
+        //printf("Answer: %s",answer);
         if (strcmp(answer,"yes\n") == 0) {send_signals_to_children(SIGCONT); break;}
         else if (strcmp(answer,"no\n") == 0) {send_signals_to_children(SIGTERM); exit(0); break;}
     } while (1);

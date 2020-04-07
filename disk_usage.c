@@ -73,7 +73,7 @@ long int calcDir(char* path,int depth)
             {
                 long int currentFileSize = calcFile(&stat_entry);
                 dirSize += currentFileSize;
-                if (mods.all && ((mods.max_depth != 0 && depth < mods.max_depth) || mods.max_depth == 0)) 
+                if (mods.all && ((mods.max_depth != -1 && depth < mods.max_depth) || mods.max_depth == -1)) 
                 {
                     printf("%ld\t%s\n",currentFileSize,full_path);
                     char entryContent[STR_LEN];
@@ -155,7 +155,7 @@ long int calcDir(char* path,int depth)
                 strcpy(full_path,path);
             }
         }
-        if ((mods.max_depth != 0 && depth <= mods.max_depth) || mods.max_depth == 0) 
+        if ((mods.max_depth != -1 && depth <= mods.max_depth) || mods.max_depth == -1) 
         {
             printf("%ld\t%s\n",dirSize,path);
             char entryContent[STR_LEN];

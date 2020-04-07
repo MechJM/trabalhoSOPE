@@ -1,3 +1,1 @@
-48	test_dir/
-36	test_dir/D1
-4	test_dir/D2
+2151996	/home/mechjm/Imagens/

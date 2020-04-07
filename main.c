@@ -34,7 +34,7 @@ int main(int argc,char* argv[])
     mods.count_links = 1;
     mods.dereference = 0;
     mods.separate_dirs = 0;
-    mods.max_depth = 0;
+    mods.max_depth = -1;
 
     for (int i = 1; argv[i] != NULL; i++)
     {
