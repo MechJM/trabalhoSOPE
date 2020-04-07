@@ -4,8 +4,8 @@
 
 void sigint_handler(int signo)
 {
+    if (signo != SIGINT) write(STDERR_FILENO,"This handler shouldn't have been called.\n",41);
     printLogEntry(log_filename,getInstant(),getpid(),RECV_SIGNAL,"SIGINT");
-    if (signo != SIGINT) fprintf(stderr,"This handler shouldn't have been called.\n");
     send_signals_to_children(SIGSTOP);
     char answer[2];
     do{
@@ -17,25 +17,24 @@ void sigint_handler(int signo)
     } while (1);
 }
 
-void install_handlers()
+void sigterm_handler(int signo)
 {
-    struct sigaction action;
-
-    sigemptyset(&action.sa_mask);
-    action.sa_handler = sigint_handler;
-    action.sa_flags = 0;
-    sigaction(SIGINT,&action,NULL);
-
+    if (signo != SIGTERM) write(STDERR_FILENO,"This handler shouldn't have been called.\n",41);
+    printLogEntry(log_filename,getInstant(),getpid(),RECV_SIGNAL,"SIGTERM");
+    exit(0);
 }
 
-void uninstall_handlers()
+void sigcont_handler(int signo)
 {
-    struct sigaction action;
+    if (signo != SIGCONT) write(STDERR_FILENO,"This handler shouldn't have been called.\n",41);
+    printLogEntry(log_filename,getInstant(),getpid(),RECV_SIGNAL,"SIGCONT");
+}
 
-    sigemptyset(&action.sa_mask);
-    action.sa_handler = SIG_DFL;
-    action.sa_flags = 0;
-    sigaction(SIGINT,&action,NULL);
+void install_handlers()
+{
+    install_handler(SIGINT);
+    install_handler(SIGTERM);
+    install_handler(SIGCONT);
 }
 
 void block_signal(int signo)
@@ -56,11 +55,48 @@ void unblock_signal(int signo)
 
 void send_signals_to_children(int signo)
 {
+    char strSigno[10] = "";
+    switch(signo)
+    {
+        case SIGINT:  {strcpy(strSigno,"SIGINT");  break;}
+        case SIGCONT: {strcpy(strSigno,"SIGCONT"); break;}
+        case SIGTERM: {strcpy(strSigno,"SIGTERM"); break;}
+        case SIGSTOP: {strcpy(strSigno,"SIGSTOP"); break;}
+        default: {write(STDERR_FILENO,"Invalid signo value received.\n",30); break;}
+    }
+
     for (int i = 0; i < childIndex; i++) 
     {
         kill(-firstLevelChildren[i],signo); 
         char entryContent[STR_LEN] = "";
-        sprintf(entryContent,"%d %d",signo,-firstLevelChildren[i]);
+        sprintf(entryContent,"%s %d",strSigno,-firstLevelChildren[i]);
         printLogEntry(log_filename,getInstant(),getpid(),SEND_SIGNAL,entryContent);
     }
 }
+
+void install_handler(int signo)
+{
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+
+    switch(signo)
+    {
+        case SIGINT:  {action.sa_handler = sigint_handler;  break;}
+        case SIGTERM: {action.sa_handler = sigterm_handler; break;}
+        case SIGCONT: {action.sa_handler = sigcont_handler; break;}
+        default: {write(STDERR_FILENO,"Invalid signo value received.\n",30); break;}
+    }
+
+    sigaction(signo,&action,NULL);
+}
+
+void uninstall_handler(int signo)
+{
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_handler = SIG_DFL;
+    action.sa_flags = 0;
+    sigaction(signo,&action,NULL);
+}
+

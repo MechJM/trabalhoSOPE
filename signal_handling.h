@@ -5,9 +5,15 @@
 
 void sigint_handler(int signo);
 
-void install_handlers();
+void sigterm_handler(int signo);
 
-void uninstall_handlers();
+void sigcont_handler(int signo);
+
+void install_handler(int signo);
+
+void uninstall_handler(int signo);
+
+void install_handlers();
 
 void block_signal(int signo);
 

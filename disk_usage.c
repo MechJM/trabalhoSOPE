@@ -100,7 +100,7 @@ long int calcDir(char* path,int depth)
                 {
                     if (getpid() != ancestor)
                     {
-                        uninstall_handlers();
+                        uninstall_handler(SIGINT);
                     }
                     unblock_signal(SIGINT);
                     if (getppid() == ancestor) setpgid(0,0);
@@ -108,6 +108,13 @@ long int calcDir(char* path,int depth)
 
 
                     close(fd[READ]);
+
+                    char entryContent[STR_LEN] = "";
+                    strcpy(entryContent,arguments);
+                    sprintf(entryContent+strlen(entryContent)," %s",full_path);
+                    printLogEntry(log_filename,getInstant(),getpid(),CREATE,entryContent);
+
+
                     long int currentDirSize = calcDir(full_path,++depth);
                     if (currentDirSize == -1) {printLogEntry(log_filename,getInstant(),getpid(),EXIT,"2"); exit(2);}
                     if (write(fd[WRITE],&currentDirSize,sizeof(currentDirSize)) < 0)
@@ -140,11 +147,7 @@ long int calcDir(char* path,int depth)
                     
 
                     close(fd[WRITE]);
-                    printLogEntry(log_filename,getInstant(),getpid(),CREATE,arguments);
                     long int currentDirSize_parent;
-
-                    
-
                     if (read(fd[READ],&currentDirSize_parent,sizeof(currentDirSize_parent)) < 0)
                     {
                         write(STDERR_FILENO,"Couldn't read from pipe.\n",25);

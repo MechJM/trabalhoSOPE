@@ -7,7 +7,7 @@ void printFirstLogEntry(char* log_filename, double instant, pid_t pid,char* info
 
     strcpy(action_string,"CREATE");
 
-    fprintf(logPtr,"%.2F - %-8d - %s - %s\n",instant,pid,action_string,info);
+    fprintf(logPtr,"%.2F - %8d - %s - %s\n",instant,pid,action_string,info);
     fclose(logPtr);
 }
 
