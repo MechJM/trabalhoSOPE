@@ -23,7 +23,7 @@
 #define WRITE 1
 
 
-double start; //Start time in milisseconds for logs
+struct timespec start; //Start time in milisseconds for logs
 
 //Arrays used for logs
 char log_filename[STR_LEN];
