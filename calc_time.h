@@ -1,8 +1,5 @@
-#ifndef CALC_TIME_H
-#define CALC_TIME_H
+#pragma once
 
 struct timespec timestamp();
 
 double getInstant();
-
-#endif

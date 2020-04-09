@@ -16,6 +16,7 @@ long int calcFile(struct stat *stat_entry)
 long int calcDir(char* path,int depth)
 {
     struct stat stat_entry;
+    
     if (lstat(path,&stat_entry) < 0)
     {
         write(STDERR_FILENO,"Couldn't get entry statistics.\n",31);
@@ -26,7 +27,7 @@ long int calcDir(char* path,int depth)
     if (S_ISREG(stat_entry.st_mode))
     {
         char entryContent[STR_LEN];
-        sprintf(entryContent,"%ld\t%s\n",calcFile(&stat_entry),path);
+        sprintf(entryContent,"%ld\t%s",calcFile(&stat_entry),path);
         printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
         printf("%ld\t%s\n",calcFile(&stat_entry),path);
     }
@@ -80,7 +81,7 @@ long int calcDir(char* path,int depth)
                 {
                     printf("%ld\t%s\n",currentFileSize,full_path);
                     char entryContent[STR_LEN];
-                    sprintf(entryContent,"%ld\t%s\n",currentFileSize,full_path);
+                    sprintf(entryContent,"%ld\t%s",currentFileSize,full_path);
                     printLogEntry(log_filename,getInstant(),getpid(),ENTRY,entryContent);
                 }
             }

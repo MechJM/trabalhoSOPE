@@ -1,5 +1,4 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#pragma once
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -62,5 +61,3 @@ struct mods
 
 char path[STR_LEN];
 
-
-#endif

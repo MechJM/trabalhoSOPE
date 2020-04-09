@@ -1,5 +1,4 @@
-#ifndef SIGNAL_HANDLING_H
-#define SIGNAL_HANDLING_H
+#pragma once
 
 #include "global.h"
 
@@ -20,5 +19,3 @@ void block_signal(int signo);
 void unblock_signal(int signo);
 
 void send_signals_to_children(int signo);
-
-#endif

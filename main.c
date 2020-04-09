@@ -38,6 +38,8 @@ int main(int argc,char* argv[])
     mods.separate_dirs = 0;
     mods.max_depth = -1;
 
+    struct stat stat_entry;
+
     for (int i = 1; argv[i] != NULL; i++)
     {
         if (strcmp(argv[i],"-a") == 0 || strcmp(argv[i],"--all") == 0) {mods.all = 1; sprintf(arguments+strlen(arguments)," %s",argv[i]);}
@@ -65,7 +67,16 @@ int main(int argc,char* argv[])
             mods.max_depth = atoi(&argv[i][++i2]);
             sprintf(arguments+strlen(arguments)," %s",argv[i]);
         }
-        else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0) strcpy(path,argv[i]);
+        else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0 && strcmp(path,"") == 0) 
+        {
+            strcpy(path,argv[i]);
+            if (lstat(path,&stat_entry) < 0) {printf("1\n"); strcpy(path,"");}
+        }
+        else
+        {
+            printf("1\n");
+        }
+        
         sprintf(firstEntryContent+strlen(firstEntryContent)," %s",argv[i]);
     }
 

@@ -7,7 +7,7 @@ void printFirstLogEntry(char* log_filename, double instant, pid_t pid,char* info
 
     strcpy(action_string,"CREATE");
 
-    fprintf(logPtr,"%.2F - %8d - %s - %s\n",instant,pid,action_string,info);
+    fprintf(logPtr,"%7.2F - %8d - %11s - %s\n",instant,pid,action_string,info);
     fclose(logPtr);
 }
 
@@ -31,10 +31,10 @@ void printLogEntry(char* log_filename, double instant, pid_t pid,enum action act
         strcpy(action_string,"SEND_SIGNAL");
         break;
     case RECV_PIPE:
-        strcpy(action_string,"RECV_PIPE");
+        strcpy(action_string,"SEND_PIPE");
         break;
     case SEND_PIPE:
-        strcpy(action_string,"SEND_PIPE");
+        strcpy(action_string,"RECV_PIPE");
         break;
     case ENTRY:
         strcpy(action_string,"ENTRY");
@@ -44,6 +44,6 @@ void printLogEntry(char* log_filename, double instant, pid_t pid,enum action act
         break;
     }
 
-    fprintf(logPtr,"%.2F - %8d - %s - %s\n",instant,pid,action_string,info);
+    fprintf(logPtr,"%7.2F - %8d - %11s - %s\n",instant,pid,action_string,info);
     fclose(logPtr);
 }
