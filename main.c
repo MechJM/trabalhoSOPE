@@ -67,16 +67,15 @@ int main(int argc,char* argv[])
             mods.max_depth = atoi(&argv[i][++i2]);
             sprintf(arguments+strlen(arguments)," %s",argv[i]);
         }
-        else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0 && strcmp(path,"") == 0) 
+        else if (strcmp(argv[i],"-l") != 0 && strcmp(argv[i],"--count-links") != 0) 
         {
-            strcpy(path,argv[i]);
-            if (lstat(path,&stat_entry) < 0) {printf("1\n"); strcpy(path,"");}
+            if (strcmp(path,"") != 0)
+            {
+                if (lstat(argv[i],&stat_entry) < 0) printf("1\n");
+                else if (lstat(path,&stat_entry) < 0) {printf("1\n"); strcpy(path,argv[i]);}
+            }
+            else strcpy(path,argv[i]);
         }
-        else
-        {
-            printf("1\n");
-        }
-        
         sprintf(firstEntryContent+strlen(firstEntryContent)," %s",argv[i]);
     }
 
