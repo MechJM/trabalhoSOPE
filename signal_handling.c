@@ -8,13 +8,18 @@ void sigint_handler(int signo)
     if (signo != SIGINT) write(STDERR_FILENO,"This handler shouldn't have been called.\n",41);
     printLogEntry(log_filename,getInstant(),getpid(),RECV_SIGNAL,"SIGINT");
     send_signals_to_children(SIGSTOP);
-    char answer[2];
+    char answer[1];
+    int counter;
     do{
         write(STDOUT_FILENO,"\nThe program has been paused. Would you like to terminate? (y/n): \n",68);
-        read(STDIN_FILENO,answer,sizeof(answer));
-        //printf("Answer: %s",answer);
-        if (strcmp(answer,"n\n") == 0) {send_signals_to_children(SIGCONT); break;}
-        else if (strcmp(answer,"y\n") == 0) {send_signals_to_children(SIGTERM); printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0"); exit(0); break;}
+        read(STDIN_FILENO,answer,1);
+        counter = 0;
+        while ((getchar()) != '\n')
+        {
+            counter++;
+        }
+        if (strcmp(answer,"n") == 0 && counter == 0) {send_signals_to_children(SIGCONT); break;}
+        else if (strcmp(answer,"y") == 0 && counter == 0) {send_signals_to_children(SIGTERM); printLogEntry(log_filename,getInstant(),getpid(),EXIT,"0"); exit(0); break;}
     } while (1);
 }
 
