@@ -1,12 +1,12 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -pedantic -pthread -lrt
-OBJS=Un.o 
+OBJS_U=Un.o 
 
-U1: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o U1
+U1: $(OBJS_U)
+	$(CC) $(CFLAGS) $(OBJS_U) -o U1
 
-U2: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o U2
+U2: $(OBJS_U)
+	$(CC) $(CFLAGS) $(OBJS_U) -o U2
 
 Un.o: Un.c   
 	$(CC) $(CFLAGS) -c Un.c 

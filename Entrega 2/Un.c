@@ -4,12 +4,17 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define NUM_THREADS 100000
 #define STR_LEN 100
 
 char fifoname[STR_LEN] = "";
+int seqNum = 1;
 int flag = 1;
+
+pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 
 void sigalrm_handler(int signo)
 {
@@ -25,8 +30,39 @@ void sigalrm_handler(int signo)
 void* threadFunc(void * arg)
 {
     arg = arg; //without this the compiler reports an error about an unused parameter
-    int duration = rand() % 20 + 1;
 
+    pthread_mutex_lock(&mut);
+    int i = seqNum++;
+    pthread_mutex_unlock(&mut);
+
+    pid_t pid = getpid();
+    pthread_t tid = pthread_self();
+    int dur = rand() % 20 + 1;
+    int pl = -1;
+
+    char ansFifoName[STR_LEN] = "";
+    sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
+    if (mkfifo(ansFifoName,0600) < 0)
+    {
+        fprintf(stderr,"Couldn't create private FIFO.\n");
+        exit(1);
+    }
+
+    FILE* reqFifoPtr = fopen(fifoname,"w");
+    fprintf(reqFifoPtr,"%d,%d,%ld,%d,%d\n",i,pid,tid,dur,pl);
+    fclose(reqFifoPtr);
+
+    FILE* ansFifoPtr = fopen(ansFifoName,"r");
+    char answer[STR_LEN] = "";
+    fgets(answer,STR_LEN,ansFifoPtr);
+    fclose(ansFifoPtr);
+
+    if (strstr(answer,"-1") != NULL) 
+    {
+        //pthread_mutex_lock(&mut);
+        flag = 0;
+        //pthread_mutex_unlock(&mut);
+    }
 
     return NULL;
 }
@@ -78,14 +114,9 @@ int main(int argc, char* argv[])
         i++;
         usleep(5000);
     }
-
-    /*
-    for (int i2 = 0; i2 < i; i2++)
-    {
-        pthread_join(tids[i2],NULL);
-    }
-    */
-
+    
+    for (int i2 = 0; i2 < i; i2++) pthread_join(tids[i2],NULL);
+    
+    pthread_mutex_destroy(&mut);
     return 0;
-    //pthread_exit(0);
 }
