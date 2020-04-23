@@ -49,7 +49,7 @@ void* threadFunc(void * arg)
     }
 
     FILE* reqFifoPtr = fopen(fifoname,"w");
-    fprintf(reqFifoPtr,"%d,%d,%ld,%d,%d\n",i,pid,tid,dur,pl);
+    fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
