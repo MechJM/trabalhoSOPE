@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 
 #define NUM_THREADS 100000
 #define STR_LEN 100
@@ -50,7 +51,9 @@ void* threadFunc(void * arg)
 
     FILE* reqFifoPtr = fopen(fifoname,"w");
     fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
+    printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
+    
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
     char answer[STR_LEN] = "";
@@ -62,7 +65,12 @@ void* threadFunc(void * arg)
         //pthread_mutex_lock(&mut);
         flag = 0;
         //pthread_mutex_unlock(&mut);
+        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
+    else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    else printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
+
+    unlink(ansFifoName);
 
     return NULL;
 }
