@@ -16,6 +16,7 @@ int seqNum = 1;
 int flag = 1;
 
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
 
 void sigalrm_handler(int signo)
 {
@@ -50,12 +51,13 @@ void* threadFunc(void * arg)
         exit(1);
     }
 
+    pthread_mutex_lock(&mutFifo);
     FILE* reqFifoPtr = fopen(fifoname,"w");
     if (reqFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-    fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
+    fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
     printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
-    
+    pthread_mutex_unlock(&mutFifo);
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
     if (ansFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
@@ -71,7 +73,11 @@ void* threadFunc(void * arg)
         printf("%ld ; %d ; %d ; %ld ; %d ; %d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
     else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-    else printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
+    else
+    {
+        //TODO atualizar o pl
+        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
+    } 
 
     unlink(ansFifoName);
 
@@ -125,9 +131,20 @@ int main(int argc, char* argv[])
         i++;
         usleep(5000);
     }
+
+
     
-    for (int i2 = 0; i2 < i; i2++) pthread_join(tids[i2],NULL);
+    for (int i2 = 0; i2 < i; i2++) 
+    {
+       if (pthread_join(tids[i2],NULL) != 0)
+       {
+           fprintf(stderr,"Couldn't wait for thread.\n");
+           exit(1);
+       }
+    }
+    
     
     pthread_mutex_destroy(&mut);
+    pthread_mutex_destroy(&mutFifo);
     return 0;
 }

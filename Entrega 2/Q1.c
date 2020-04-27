@@ -14,6 +14,7 @@
 char fifoname[STR_LEN] = "";
 int flag = 1;
 
+pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
 
 void sigalrm_handler(int signo)
 {
@@ -32,7 +33,7 @@ void parse(char* str, char* is, char* pids, char* tids, char* durs)
 
     int pl;
 
-    sscanf(str,"[%s,%s,%s,%s,%d]\n",is,pids,tids,durs,&pl);
+    sscanf(str,"[ %s , %s , %s , %s , %d ]\n",is,pids,tids,durs,&pl);
   
   
     /*
@@ -67,8 +68,12 @@ void* threadFunc(void * arg)
 
     char str[STR_LEN] = "";
 
-    FILE* reqFifoPtr = fopen(fifoname,"r");
+    pthread_mutex_lock(&mutFifo);
+    FILE* reqFifoPtr = fopen(fifoname,"rw");
     fgets(str, STR_LEN, reqFifoPtr);
+    fclose(reqFifoPtr);
+    pthread_mutex_unlock(&mutFifo);
+
     // fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
     printf("%s",str);
 
@@ -83,7 +88,7 @@ void* threadFunc(void * arg)
 
 
     printf("%ld ; %s ; %s ; %s ; %d ; %s ; RECVD\n",time(NULL),i,pid,tid,dur,i);
-    fclose(reqFifoPtr);
+    
 
     char ansFifoName[STR_LEN] = "";
     int pid_num = atoi(pid);
@@ -120,6 +125,8 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+
+
     srand(time(NULL));
 
     int nsecs;
@@ -132,6 +139,12 @@ int main(int argc, char* argv[])
             nsecs = atoi(argv[i]);
         }
         else strcpy(fifoname,argv[i]);
+    }
+
+    if (mkfifo(fifoname,0600) < 0)
+    {
+        fprintf(stderr,"Couldn't create public FIFO.\n");
+        exit(1);
     }
 
     struct sigaction action;
@@ -167,12 +180,13 @@ int main(int argc, char* argv[])
     char tid[STR_LEN] = "";
     char durs[STR_LEN] = "";
 
-    FILE* fifoPtr =  fopen(fifoname,"r");
+    pthread_mutex_lock(&mutFifo);
+    FILE* fifoPtr =  fopen(fifoname,"rw");
+  
 
     while(1)
-    {
-        fgets(str, STR_LEN, fifoPtr);
-        if (str == NULL)
+    {   
+        if (fgets(str, STR_LEN, fifoPtr) == NULL)
             break;
         parse(str,i,pid,tid,durs);
         printf("%ld ; %s ; %s ; %s ; %s ; %s ; 2LATE\n",time(NULL),i,pid,tid,durs,i);
@@ -193,8 +207,17 @@ int main(int argc, char* argv[])
             fclose(ansFifoPtr);
         }
     }
+
     
+
+    fclose(fifoPtr);
+    pthread_mutex_unlock(&mutFifo);
+
     for (int i2 = 0; i2 < k; i2++) pthread_join(tids[i2],NULL);
     
+    unlink(fifoname);
+
+    pthread_mutex_destroy(&mutFifo);
+
     return 0;
 }
