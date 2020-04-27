@@ -45,17 +45,20 @@ void* threadFunc(void * arg)
     sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
     if (mkfifo(ansFifoName,0600) < 0)
     {
-        fprintf(stderr,"Couldn't create private FIFO.\n");
+        //fprintf(stderr,"Couldn't create private FIFO.\n");
+        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         exit(1);
     }
 
     FILE* reqFifoPtr = fopen(fifoname,"w");
+    if (reqFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
     printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
     
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
+    if (ansFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
