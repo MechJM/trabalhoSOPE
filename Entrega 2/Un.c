@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
-
+    //printf("Cheguei aqui\n");
     
     for (int i2 = 0; i2 < i; i2++) 
     {
@@ -148,7 +148,8 @@ int main(int argc, char* argv[])
        }
     }
     
-    
+    //printf("Cheguei aqui2\n");
+
     pthread_mutex_destroy(&mut);
     pthread_mutex_destroy(&mutFifo);
     return 0;

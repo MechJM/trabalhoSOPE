@@ -27,41 +27,6 @@ void sigalrm_handler(int signo)
     flag = 0;
 }
 
-void parse(char* str, char* is, char* pids, char* tids, char* durs)
-{
-    //int j = 1;
-
-    int pl;
-
-    sscanf(str,"[ %s , %s , %s , %s , %d ]\n",is,pids,tids,durs,&pl);
-  
-  
-    /*
-    while(str[j] != ';') // parses i
-    {
-        strcat(i, str[j]);
-        j++;
-    }
-    j++;
-    while(str[j] != ';') // parses pid
-    {
-        strcat(pid, str[j]);
-        j++;
-    }
-    j++;
-    while(str[j] != ';') // parses tid
-    {
-        strcat(tid, str[j]);
-        j++;
-    }
-    j++;
-    while(str[j] != ';') // parses dur
-    {
-        strcat(durs, str[j]);
-        j++;
-    }*/
-}
-
 void* threadFunc(void * arg)
 {
     arg = arg; //without this the compiler reports an error about an unused parameter
@@ -82,7 +47,9 @@ void* threadFunc(void * arg)
     char pid[STR_LEN] = "";
     char tid[STR_LEN] = "";
     char durs[STR_LEN] = "";
-    parse(str,i,pid,tid,durs);
+    
+    int pl;
+    sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
     int dur = atoi(durs);
    
 
@@ -183,12 +150,14 @@ int main(int argc, char* argv[])
     pthread_mutex_lock(&mutFifo);
     FILE* fifoPtr =  fopen(fifoname,"rw");
   
+    int pl;
 
     while(1)
     {   
         if (fgets(str, STR_LEN, fifoPtr) == NULL)
             break;
-        parse(str,i,pid,tid,durs);
+        
+        sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
         printf("%ld ; %s ; %s ; %s ; %s ; %s ; 2LATE\n",time(NULL),i,pid,tid,durs,i);
         
         char ansFifoName[STR_LEN] = "";
