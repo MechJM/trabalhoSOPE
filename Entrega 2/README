@@ -5,7 +5,7 @@ U1:
 - A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com a função alarm e o respetivo signal handler 
 - É usada uma variável global para obter o valor sequencial do parâmetro i da mensagem, cujo acesso é gerido com um mutex
 - A duração usada no pedido é um valor aleatório entre 1 e 20
-- O registo da operação FAILD é realizado quando o cliente não consegue ler uma resposta do fifo privado
-- A main thread espera 5 milissegundos entre criação de threads
+- O registo da operação FAILD é realizado quando ocorrem erros
+- A main thread espera 5 milissegundos entre cada criação de uma thread nova
 
 Q1:
