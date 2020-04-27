@@ -47,20 +47,20 @@ void* threadFunc(void * arg)
     if (mkfifo(ansFifoName,0600) < 0)
     {
         //fprintf(stderr,"Couldn't create private FIFO.\n");
-        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         exit(1);
     }
 
     pthread_mutex_lock(&mutFifo);
     FILE* reqFifoPtr = fopen(fifoname,"w");
-    if (reqFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    if (reqFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
-    printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
+    printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
-    if (ansFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    if (ansFifoPtr == NULL) printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
@@ -70,13 +70,13 @@ void* threadFunc(void * arg)
         //pthread_mutex_lock(&mut);
         flag = 0;
         //pthread_mutex_unlock(&mut);
-        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
+        printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
-    else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %d ; %d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     else
     {
         //TODO atualizar o pl
-        printf("%ld ; %d ; %d ; %ld ; %d ; %d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
+        printf("%ld ; %d ; %d ; %ld ; %2d ; %3d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
     } 
 
     unlink(ansFifoName);
