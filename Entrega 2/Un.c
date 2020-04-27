@@ -55,9 +55,9 @@ void* threadFunc(void * arg)
     FILE* reqFifoPtr = fopen(fifoname,"w");
     if (reqFifoPtr == NULL) printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
     fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
-    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
+    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
     if (ansFifoPtr == NULL) printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
@@ -69,9 +69,9 @@ void* threadFunc(void * arg)
 
     if (strstr(answer,"-1") != NULL) 
     {
-        //pthread_mutex_lock(&mut);
+        pthread_mutex_lock(&mut);
         flag = 0;
-        //pthread_mutex_unlock(&mut);
+        pthread_mutex_unlock(&mut);
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
     else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
@@ -137,18 +137,19 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
-    //printf("Cheguei aqui\n");
     
     for (int i2 = 0; i2 < i; i2++) 
     {
-       if (pthread_join(tids[i2],NULL) != 0)
-       {
-           fprintf(stderr,"Couldn't wait for thread.\n");
-           exit(1);
-       }
+        printf("Inicio i2: %d\n",i2);
+        if (pthread_join(tids[i2],NULL) != 0)
+        {
+            fprintf(stderr,"Couldn't wait for thread.\n");
+            exit(1);
+        }
+        printf("Fim i2: %d\n",i2);
     }
     
-    //printf("Cheguei aqui2\n");
+    
 
     pthread_mutex_destroy(&mut);
     pthread_mutex_destroy(&mutFifo);
