@@ -40,7 +40,7 @@ void* threadFunc(void * arg)
     pthread_mutex_unlock(&mutFifo);
 
     // fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
-    printf("%s",str);
+    //printf("%s",str);
 
     //char* i, *pid, *tid, *durs;
     char i[STR_LEN] = "";
@@ -93,9 +93,6 @@ int main(int argc, char* argv[])
     }
 
 
-
-    srand(time(NULL));
-
     int nsecs;
 
     for (int i = 1; argv[i] != NULL; i++)
@@ -106,12 +103,6 @@ int main(int argc, char* argv[])
             nsecs = atoi(argv[i]);
         }
         else strcpy(fifoname,argv[i]);
-    }
-
-    if (mkfifo(fifoname,0600) < 0)
-    {
-        fprintf(stderr,"Couldn't create public FIFO.\n");
-        exit(1);
     }
 
     struct sigaction action;
@@ -125,6 +116,12 @@ int main(int argc, char* argv[])
     }
 
     alarm(nsecs);
+
+    if (mkfifo(fifoname,0600) < 0)
+    {
+        fprintf(stderr,"Couldn't create public FIFO.\n");
+        exit(1);
+    }
 
     pthread_t tids[NUM_THREADS];
 
