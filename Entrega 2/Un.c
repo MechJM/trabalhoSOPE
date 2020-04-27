@@ -137,6 +137,10 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
+    sigset_t mask;
+    sigfillset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
+
     
     for (int i2 = 0; i2 < i; i2++) 
     {
