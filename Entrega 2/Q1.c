@@ -9,7 +9,7 @@
 #include <time.h>
 
 #define NUM_THREADS 100000
-#define STR_LEN 100
+#define STR_LEN 200
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
