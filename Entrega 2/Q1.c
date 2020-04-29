@@ -179,7 +179,16 @@ int main(int argc, char* argv[])
     fclose(fifoPtr);
     pthread_mutex_unlock(&mutFifo);
 
-    for (int i2 = 0; i2 < k; i2++) pthread_join(tids[i2],NULL);
+    for (int i2 = 0; i2 < k; i2++)
+    {
+        printf("Inicio i2: %d\n",i2);
+        if (pthread_join(tids[i2],NULL) != 0)
+        {
+            fprintf(stderr,"Couldn't wait for thread.\n");
+            exit(1);
+        }
+        printf("Fim i2: %d\n",i2);
+    } 
     
     unlink(fifoname);
 

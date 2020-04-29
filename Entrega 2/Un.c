@@ -48,21 +48,40 @@ void* threadFunc(void * arg)
     {
         //fprintf(stderr,"Couldn't create private FIFO.\n");
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-        exit(1);
+        printf("FINISHED i:%d\n",i);
+        pthread_exit(0);
     }
 
     pthread_mutex_lock(&mutFifo);
     FILE* reqFifoPtr = fopen(fifoname,"w");
-    if (reqFifoPtr == NULL) printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    if (reqFifoPtr == NULL)
+    {
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        unlink(ansFifoName);
+        printf("FINISHED i:%d\n",i);
+        pthread_exit(0);
+    } 
     fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
     printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
-    if (ansFifoPtr == NULL) printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    if (ansFifoPtr == NULL) 
+    {
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        unlink(ansFifoName);
+        printf("FINISHED i:%d\n",i);
+        pthread_exit(0);
+    }
     char answer[STR_LEN] = "";
-    fgets(answer,STR_LEN,ansFifoPtr);
+    if (fgets(answer,STR_LEN,ansFifoPtr) == NULL)
+    {
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        unlink(ansFifoName);
+        printf("FINISHED i:%d\n",i);
+        pthread_exit(0);
+    }
     fclose(ansFifoPtr);
 
     
@@ -74,7 +93,13 @@ void* threadFunc(void * arg)
         pthread_mutex_unlock(&mut);
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
-    else if (strstr(answer,"[") == NULL) printf("%ld ; %d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+    else if (strstr(answer,"[") == NULL)
+    {
+        printf("%ld ; %d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        unlink(ansFifoName);
+        printf("FINISHED i:%d\n",i);
+        pthread_exit(0);
+    } 
     else
     {
         int buffer,buffer2,buffer4;
@@ -86,6 +111,8 @@ void* threadFunc(void * arg)
 
     unlink(ansFifoName);
 
+    printf("FINISHED i:%d\n",i);
+    
     return NULL;
 }
 
@@ -141,11 +168,11 @@ int main(int argc, char* argv[])
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
-    
+    void * retVal;    
     for (int i2 = 0; i2 < i; i2++) 
     {
         printf("Inicio i2: %d\n",i2);
-        if (pthread_join(tids[i2],NULL) != 0)
+        if (pthread_join(tids[i2],&retVal) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
