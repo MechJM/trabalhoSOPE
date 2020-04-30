@@ -181,6 +181,10 @@ int main(int argc, char* argv[])
     fclose(fifoPtr);
     pthread_mutex_unlock(&mutFifo);
 
+    sigset_t mask;
+    sigfillset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
+
     for (int i2 = 0; i2 < k; i2++)
     {
         printf("Inicio i2: %d\n",i2);
