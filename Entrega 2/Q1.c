@@ -34,7 +34,7 @@ void* threadFunc(void * arg)
     char str[STR_LEN] = "";
 
     pthread_mutex_lock(&mutFifo);
-    FILE* reqFifoPtr = fopen(fifoname,"rw");
+    FILE* reqFifoPtr = fopen(fifoname,"r");
     fgets(str, STR_LEN, reqFifoPtr);
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
@@ -52,7 +52,7 @@ void* threadFunc(void * arg)
     sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
     int dur = atoi(durs);
    
-
+    
 
     printf("%ld ; %s ; %s ; %s ; %d ; %s ; RECVD\n",time(NULL),i,pid,tid,dur,i);
     
