@@ -54,6 +54,7 @@ void* threadFunc(void * arg)
     FILE* reqFifoPtr = fopen(fifoname,"w");
     if (reqFifoPtr == NULL)
     {
+        pthread_mutex_unlock(&mutFifo);
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
         pthread_exit(0);
