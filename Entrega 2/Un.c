@@ -46,9 +46,7 @@ void* threadFunc(void * arg)
     sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
     if (mkfifo(ansFifoName,0600) < 0)
     {
-        //fprintf(stderr,"Couldn't create private FIFO.\n");
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-        printf("FINISHED i:%d\n",i);
         pthread_exit(0);
     }
 
@@ -58,7 +56,6 @@ void* threadFunc(void * arg)
     {
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
-        printf("FINISHED i:%d\n",i);
         pthread_exit(0);
     } 
     fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
@@ -71,7 +68,6 @@ void* threadFunc(void * arg)
     {
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
-        printf("FINISHED i:%d\n",i);
         pthread_exit(0);
     }
     char answer[STR_LEN] = "";
@@ -79,7 +75,6 @@ void* threadFunc(void * arg)
     {
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
-        printf("FINISHED i:%d\n",i);
         pthread_exit(0);
     }
     fclose(ansFifoPtr);
@@ -97,7 +92,6 @@ void* threadFunc(void * arg)
     {
         printf("%ld ; %d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
-        printf("FINISHED i:%d\n",i);
         pthread_exit(0);
     } 
     else
@@ -110,8 +104,6 @@ void* threadFunc(void * arg)
     } 
 
     unlink(ansFifoName);
-
-    printf("FINISHED i:%d\n",i);
     
     return NULL;
 }
@@ -167,12 +159,11 @@ int main(int argc, char* argv[])
     sigset_t mask;
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
-
-    void * retVal;    
+  
     for (int i2 = 0; i2 < i; i2++) 
     {
         printf("Inicio i2: %d\n",i2);
-        if (pthread_join(tids[i2],&retVal) != 0)
+        if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
