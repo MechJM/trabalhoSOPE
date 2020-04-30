@@ -71,11 +71,10 @@ void* threadFunc(void * arg)
         unlink(ansFifoName);
         pthread_exit(0);
     }
+    usleep(1000);
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
-
-    
 
     if (strstr(answer,"-1") != NULL) 
     {
