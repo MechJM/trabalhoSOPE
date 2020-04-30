@@ -155,6 +155,8 @@ int main(int argc, char* argv[])
     sigset_t mask;
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
+
+    if ((seqNum - i) != 1) i--;
   
     for (int i2 = 0; i2 < i; i2++) 
     {
