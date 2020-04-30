@@ -90,12 +90,6 @@ void* threadFunc(void * arg)
         pthread_mutex_unlock(&mut);
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
     }
-    else if (strstr(answer,"[") == NULL)
-    {
-        printf("%ld ; %d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-        unlink(ansFifoName);
-        pthread_exit(0);
-    } 
     else
     {
         int buffer,buffer2,buffer4;
