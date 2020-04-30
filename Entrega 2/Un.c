@@ -72,13 +72,7 @@ void* threadFunc(void * arg)
         pthread_exit(0);
     }
     char answer[STR_LEN] = "";
-    if (fgets(answer,STR_LEN,ansFifoPtr) == NULL)
-    {
-        fclose(ansFifoPtr);
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
-        unlink(ansFifoName);
-        pthread_exit(0);
-    }
+    fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
 
     
