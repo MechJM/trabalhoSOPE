@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            fprintf(ansFifoPtr,"[%s,%s,%s,%d,%d]\n",i,pid,tid,-1,-1);
+            fprintf(ansFifoPtr,"[ %s , %s , %s , -1 , -1 ]\n",i,pid,tid);
             fclose(ansFifoPtr);
         }
     }
