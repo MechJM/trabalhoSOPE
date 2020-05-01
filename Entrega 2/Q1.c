@@ -147,6 +147,8 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
+    printf("Cheguei aqui\n");
+
     char str[STR_LEN] = "";
     //char* i, *pid, *tid, *durs;
     char i[STR_LEN] = "";
@@ -183,9 +185,10 @@ int main(int argc, char* argv[])
             fclose(ansFifoPtr);
         }
     }
-
+    
     fclose(fifoPtr);
     pthread_mutex_unlock(&mutFifo);
+    unlink(fifoname);
 
     sigset_t mask;
     sigfillset(&mask);
@@ -202,7 +205,7 @@ int main(int argc, char* argv[])
         printf("Fim i2: %d\n",i2);
     } 
     
-    unlink(fifoname);
+    
 
     pthread_mutex_destroy(&mutFifo);
 

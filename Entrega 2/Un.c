@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
-    printf("i: %d; seqNum: %d\n",i,seqNum);
+    
   
     for (int i2 = 0; i2 < i; i2++) 
     {
