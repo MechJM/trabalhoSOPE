@@ -115,6 +115,16 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+    struct sigaction action2;
+    action2.sa_handler = SIG_IGN;
+    sigemptyset(&action2.sa_mask);
+    action2.sa_flags = 0;
+    if (sigaction(SIGPIPE,&action2,NULL) < 0)
+    {
+        fprintf(stderr,"Couldn't install signal handler.\n");
+        exit(1);
+    }
+
     alarm(nsecs);
 
     if (mkfifo(fifoname,0600) < 0)

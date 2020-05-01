@@ -71,7 +71,7 @@ void* threadFunc(void * arg)
         unlink(ansFifoName);
         pthread_exit(0);
     }
-    usleep(1000);
+    //usleep(1000);
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
-    if ((seqNum - i) != 1) i--;
+    printf("i: %d; seqNum: %d\n",i,seqNum);
   
     for (int i2 = 0; i2 < i; i2++) 
     {
