@@ -74,6 +74,7 @@ void* threadFunc(void * arg)
     //usleep(1000);
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
+  
     fclose(ansFifoPtr);
 
     if (strstr(answer,"-1") != NULL) 

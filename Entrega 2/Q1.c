@@ -15,6 +15,7 @@ char fifoname[STR_LEN] = "";
 int flag = 1;
 
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutFlag = PTHREAD_MUTEX_INITIALIZER;
 
 void sigalrm_handler(int signo)
 {
@@ -23,8 +24,9 @@ void sigalrm_handler(int signo)
         fprintf(stderr,"This handler shouldn't have been called.\n");
         return;
     }
-
+    pthread_mutex_lock(&mutFlag);
     flag = 0;
+    pthread_mutex_unlock(&mutFlag);
 }
 
 void* threadFunc(void * arg)
@@ -147,8 +149,6 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
-    printf("Cheguei aqui\n");
-
     char str[STR_LEN] = "";
     //char* i, *pid, *tid, *durs;
     char i[STR_LEN] = "";
@@ -208,6 +208,6 @@ int main(int argc, char* argv[])
     
 
     pthread_mutex_destroy(&mutFifo);
-
+    pthread_mutex_destroy(&mutFlag);
     return 0;
 }
