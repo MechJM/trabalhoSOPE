@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#include <fcntl.h>
 
 #define NUM_THREADS 100000
 #define STR_LEN 100
@@ -17,16 +18,24 @@ int flag = 1;
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutFlag = PTHREAD_MUTEX_INITIALIZER;
 
-void sigalrm_handler(int signo)
+void* countTime(void * arg)
 {
-    if (signo != SIGALRM)
+    int time = *(int * )arg;
+    
+    struct timespec str1,str2;
+    str1.tv_sec = time;
+    str1.tv_nsec = 0;
+    if (nanosleep(&str1,&str2) < 0)
     {
-        fprintf(stderr,"This handler shouldn't have been called.\n");
-        return;
+        fprintf(stderr,"Couldn't sleep.\n");
+        exit(1);
     }
     pthread_mutex_lock(&mutFlag);
+    printf("About to switch flag\n");
     flag = 0;
+    printf("Just switched the flag\n");
     pthread_mutex_unlock(&mutFlag);
+    return NULL;
 }
 
 void* threadFunc(void * arg)
@@ -36,8 +45,14 @@ void* threadFunc(void * arg)
     char str[STR_LEN] = "";
 
     pthread_mutex_lock(&mutFifo);
-    FILE* reqFifoPtr = fopen(fifoname,"r");
-    fgets(str, STR_LEN, reqFifoPtr);
+
+    FILE* reqFifoPtr = fopen(fifoname,"rw");
+    if (fgets(str, STR_LEN, reqFifoPtr) == NULL)
+    {
+        fclose(reqFifoPtr);
+        pthread_mutex_unlock(&mutFifo);
+        pthread_exit(0);
+    }
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
 
@@ -63,6 +78,10 @@ void* threadFunc(void * arg)
     int pid_num = atoi(pid);
     long int tid_num = atol(tid);
     sprintf(ansFifoName,"/tmp/%d.%ld",pid_num,tid_num);
+
+    struct timespec time1,time2;
+    time1.tv_sec = 0;
+    time1.tv_nsec = dur * 1000000;
     
 
     FILE* ansFifoPtr = fopen(ansFifoName,"w");
@@ -76,7 +95,7 @@ void* threadFunc(void * arg)
 
         printf("%ld ; %s ; %s ; %s ; %d ; %s ; ENTER\n",time(NULL),i,pid,tid,dur,i);
 
-        usleep(dur*1000);
+        nanosleep(&time1,&time2);
 
         printf("%ld ; %s ; %s ; %s ; %d ; %s ; TIMUP\n",time(NULL),i,pid,tid,dur,i);
 
@@ -107,13 +126,11 @@ int main(int argc, char* argv[])
         else strcpy(fifoname,argv[i]);
     }
 
-    struct sigaction action;
-    action.sa_handler = sigalrm_handler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    if (sigaction(SIGALRM,&action,NULL) < 0)
+    pthread_t timeThread;
+
+    if (pthread_create(&timeThread,NULL,countTime,&nsecs) != 0)
     {
-        fprintf(stderr,"Couldn't install signal handler.\n");
+        fprintf(stderr,"Couldn't create time thread\n");
         exit(1);
     }
 
@@ -127,8 +144,6 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    alarm(nsecs);
-
     if (mkfifo(fifoname,0600) < 0)
     {
         fprintf(stderr,"Couldn't create public FIFO.\n");
@@ -136,6 +151,12 @@ int main(int argc, char* argv[])
     }
 
     pthread_t tids[NUM_THREADS];
+
+    struct timespec time1,time2;
+    time1.tv_sec = 0;
+    time1.tv_nsec = 5000000;
+
+    printf("Cheguei aqui\n");
 
     int k = 0;
     while (flag)
@@ -146,8 +167,10 @@ int main(int argc, char* argv[])
             exit(1);
         }
         k++;
-        usleep(5000);
+        nanosleep(&time1,&time2);
     }
+
+    printf("Cheguei aqui2\n");
 
     char str[STR_LEN] = "";
     //char* i, *pid, *tid, *durs;
@@ -157,7 +180,9 @@ int main(int argc, char* argv[])
     char durs[STR_LEN] = "";
 
     pthread_mutex_lock(&mutFifo);
+    printf("Cheguei aqui2.5\n");
     FILE* fifoPtr =  fopen(fifoname,"rw");
+    printf("Cheguei aqui2.75\n");
   
     int pl;
 
@@ -185,6 +210,8 @@ int main(int argc, char* argv[])
             fclose(ansFifoPtr);
         }
     }
+
+    printf("Cheguei aqui3\n");
     
     fclose(fifoPtr);
     pthread_mutex_unlock(&mutFifo);
@@ -204,6 +231,8 @@ int main(int argc, char* argv[])
         }
         printf("Fim i2: %d\n",i2);
     } 
+
+    printf("Cheguei aqui4\n");
     
     
 

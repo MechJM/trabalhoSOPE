@@ -17,16 +17,26 @@ int flag = 1;
 
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutFlag = PTHREAD_MUTEX_INITIALIZER;
 
-void sigalrm_handler(int signo)
+void* countTime(void * arg)
 {
-    if (signo != SIGALRM)
+    int time = *(int * )arg;
+    
+    struct timespec str1,str2;
+    str1.tv_sec = time;
+    str1.tv_nsec = 0;
+    if (nanosleep(&str1,&str2) < 0)
     {
-        fprintf(stderr,"This handler shouldn't have been called.\n");
-        return;
+        fprintf(stderr,"Couldn't sleep.\n");
+        exit(1);
     }
-
+    pthread_mutex_lock(&mutFlag);
+    printf("About to switch flag\n");
     flag = 0;
+    printf("Just switched the flag\n");
+    pthread_mutex_unlock(&mutFlag);
+    return NULL;
 }
 
 void* threadFunc(void * arg)
@@ -59,7 +69,7 @@ void* threadFunc(void * arg)
         unlink(ansFifoName);
         pthread_exit(0);
     } 
-    fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
+    fprintf(reqFifoPtr,"[ %4d , %6d , %8ld , %2d , %4d ]\n",i,pid,tid,dur,pl);
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
     printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
@@ -76,6 +86,7 @@ void* threadFunc(void * arg)
     fgets(answer,STR_LEN,ansFifoPtr);
   
     fclose(ansFifoPtr);
+
 
     if (strstr(answer,"-1") != NULL) 
     {
@@ -120,19 +131,21 @@ int main(int argc, char* argv[])
         else strcpy(fifoname,argv[i]);
     }
 
-    struct sigaction action;
-    action.sa_handler = sigalrm_handler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    if (sigaction(SIGALRM,&action,NULL) < 0)
+    
+
+    pthread_t timeThread;
+
+    if (pthread_create(&timeThread,NULL,countTime,&nsecs) != 0)
     {
-        fprintf(stderr,"Couldn't install signal handler.\n");
+        fprintf(stderr,"Couldn't create time thread\n");
         exit(1);
     }
 
-    alarm(nsecs);
-
     pthread_t tids[NUM_THREADS];
+
+    struct timespec time1,time2;
+    time1.tv_sec = 0;
+    time1.tv_nsec = 5000000;
 
     int i = 0;
     while (flag)
@@ -143,7 +156,7 @@ int main(int argc, char* argv[])
             exit(1);
         }
         i++;
-        usleep(5000);
+        nanosleep(&time1,&time2);
     }
 
     sigset_t mask;
@@ -167,5 +180,6 @@ int main(int argc, char* argv[])
 
     pthread_mutex_destroy(&mut);
     pthread_mutex_destroy(&mutFifo);
+    pthread_mutex_destroy(&mutFlag);
     return 0;
 }
