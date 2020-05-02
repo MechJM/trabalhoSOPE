@@ -35,9 +35,24 @@ void* threadFunc(void * arg)
 
     char str[STR_LEN] = "";
 
+    //struct stat stat_buf;
+    
+
     pthread_mutex_lock(&mutFifo);
-    FILE* reqFifoPtr = fopen(fifoname,"r");
-    fgets(str, STR_LEN, reqFifoPtr);
+    /*stat(fifoname,&stat_buf);
+    if (stat_buf.st_size < 1) 
+    {
+        pthread_mutex_unlock(&mutFifo);
+        pthread_exit(0);
+    }*/
+    FILE* reqFifoPtr = fopen(fifoname,"rw");
+    if (fgets(str, STR_LEN, reqFifoPtr) == NULL)
+    {
+        fclose(reqFifoPtr);
+        pthread_mutex_unlock(&mutFifo);
+        pthread_exit(0);
+    }
+    
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
 
@@ -134,6 +149,7 @@ int main(int argc, char* argv[])
         fprintf(stderr,"Couldn't create public FIFO.\n");
         exit(1);
     }
+
 
     pthread_t tids[NUM_THREADS];
 
