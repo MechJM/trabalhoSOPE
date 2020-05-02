@@ -32,9 +32,7 @@ void* countTime(void * arg)
         exit(1);
     }
     pthread_mutex_lock(&mutFlag);
-    printf("About to switch flag\n");
     flag = 0;
-    printf("Just switched the flag\n");
     pthread_mutex_unlock(&mutFlag);
     return NULL;
 }
