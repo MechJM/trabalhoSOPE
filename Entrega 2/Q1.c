@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 
     pthread_mutex_lock(&mutFifo);
     printf("Cheguei aqui2.5\n");
-    FILE* fifoPtr =  fopen(fifoname,"rw");
+    FILE* fifoPtr =  fopen(fifoname,"r");
     printf("Cheguei aqui2.75\n");
   
     int pl;
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
 
     printf("Cheguei aqui4\n");
     
-
+    remove(fifoname);
 
     pthread_mutex_destroy(&mutFifo);
     pthread_mutex_destroy(&mutFlag);
