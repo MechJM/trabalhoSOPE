@@ -13,7 +13,7 @@
 #define STR_LEN 100
 
 char fifoname[STR_LEN] = "";
-int flag = 1;
+int flag = 1,flag2 = 1;
 
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutFlag = PTHREAD_MUTEX_INITIALIZER;
@@ -46,7 +46,7 @@ void* threadFunc(void * arg)
 
     pthread_mutex_lock(&mutFifo);
 
-    FILE* reqFifoPtr = fopen(fifoname,"rw");
+    FILE* reqFifoPtr = fopen(fifoname,"r");
     if (fgets(str, STR_LEN, reqFifoPtr) == NULL)
     {
         fclose(reqFifoPtr);
@@ -64,6 +64,8 @@ void* threadFunc(void * arg)
     char pid[STR_LEN] = "";
     char tid[STR_LEN] = "";
     char durs[STR_LEN] = "";
+
+    if (strcmp(str,"Finished\n") == 0) {printf("Cheguei aqui na thread"); flag2 = 0;pthread_exit(0);}
     
     int pl;
     sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
@@ -161,6 +163,7 @@ int main(int argc, char* argv[])
     int k = 0;
     while (flag)
     {
+        if (!flag2) continue;
         if (pthread_create(&tids[k],NULL,threadFunc,NULL) != 0)
         {
             fprintf(stderr,"Couldn't create thread.\n");
@@ -234,7 +237,7 @@ int main(int argc, char* argv[])
 
     printf("Cheguei aqui4\n");
     
-    
+
 
     pthread_mutex_destroy(&mutFifo);
     pthread_mutex_destroy(&mutFlag);

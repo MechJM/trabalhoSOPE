@@ -158,6 +158,14 @@ int main(int argc, char* argv[])
         i++;
         nanosleep(&time1,&time2);
     }
+    time1.tv_nsec = 5000000000;
+    pthread_mutex_lock(&mutFifo);
+    FILE* fifoPtr = fopen(fifoname,"w");
+    
+    nanosleep(&time1,&time2);
+    fprintf(fifoPtr,"Finished\n");
+    fclose(fifoPtr);
+    pthread_mutex_unlock(&mutFifo);
 
     sigset_t mask;
     sigfillset(&mask);

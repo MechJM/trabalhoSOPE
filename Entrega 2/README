@@ -1,11 +1,19 @@
 Detalhes de implementação:
 
 U1:
-- As mensagens trocadas com o servidos são delimitadas com parênteses retos e cada uma é colocada numa linha diferente
-- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com a função alarm e o respetivo signal handler 
-- É usada uma variável global para obter o valor sequencial do parâmetro i da mensagem, cujo acesso é gerido com um mutex
-- A duração usada no pedido é um valor aleatório entre 1 e 20
-- O registo da operação FAILD é realizado quando ocorrem erros
-- A main thread espera 5 milissegundos entre cada criação de uma thread nova
+- As mensagens trocadas com o servidos são delimitadas com parênteses retos e cada uma é colocada numa linha diferente.
+- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com uma thread à parte e nanosleep.
+- É usada uma variável global para obter o valor sequencial do parâmetro i da mensagem, cujo acesso é gerido com um mutex.
+- A duração usada no pedido é um valor aleatório entre 1 e 20.
+- O registo da operação FAILD é realizado quando ocorrem erros.
+- A main thread espera 5 milissegundos entre cada criação de uma thread nova.
 
 Q1:
+- A main thread espera 5 milissegundos entre cada criação de uma thread nova.
+- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com uma thread à parte e nanosleep.
+- As mensagens trocadas com o servidos são delimitadas com parênteses retos e cada uma é colocada numa linha diferente.
+- O número de cada casa de banho é igual ao número sequencial fornecido pelo cliente.
+- Os pedidos feitos fora do tempo são atendidos pela main thread.
+
+Notas adicionais:
+- Se o tempo (nsecs) do servidor for superior ao do cliente, o programa do servidor não termina bem a menos que outros clientes sejam chamados e consequentemente, o servidor. Sabemos porque isto ocorre mas, apesar dos nossos esforços, não conseguimos solucionar o problema.
