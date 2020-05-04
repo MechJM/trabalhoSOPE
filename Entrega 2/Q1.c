@@ -14,7 +14,10 @@
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
+int needCleanup = 1;
 pthread_mutex_t flagMut = PTHREAD_MUTEX_INITIALIZER;
+int threadsCreated = 0;
+pthread_t tids[NUM_THREADS];
 
 struct message
 {
@@ -40,6 +43,38 @@ void * countTime(void * arg)
         pthread_exit(0);
     }
     flag = 0;
+
+    time1.tv_nsec = 5000000;
+    time1.tv_sec = 0;
+
+    if (nanosleep(&time1,&time2) < 0)
+    {
+        fprintf(stderr,"Couldn't sleep.\n");
+        pthread_exit(0);
+    }
+
+    if (needCleanup)
+    {
+        unlink(fifoname);
+
+        sigset_t mask;
+        sigfillset(&mask);
+        sigprocmask(SIG_SETMASK, &mask, NULL);
+
+        
+        for (int i2 = 0; i2 < threadsCreated; i2++) 
+        {
+            if (pthread_join(tids[i2],NULL) != 0)
+            {
+                fprintf(stderr,"Couldn't wait for thread.\n");
+                exit(1);
+            }
+        }
+
+        pthread_mutex_destroy(&flagMut);
+        exit(0);
+    }
+
     return NULL;
 }
 
@@ -157,16 +192,12 @@ int main(int argc, char* argv[])
     }
     
 
-    pthread_t tids[NUM_THREADS];
+    
     struct message reqs[NUM_THREADS];
     char request[STR_LEN] = "";
-/*
-    struct timespec time1,time2;
-    time1.tv_sec = 0;
-    time1.tv_nsec = 5000000;
-*/
+
     
-    int i = 0; 
+    
 
     while (flag)
     {
@@ -179,27 +210,19 @@ int main(int argc, char* argv[])
         } 
         while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
         {
-            sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[i].i,&reqs[i].pid,&reqs[i].tid,&reqs[i].dur,&reqs[i].pl);
-            if (pthread_create(&tids[i],NULL,threadFunc,&reqs[i]) != 0)
+            sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[threadsCreated].i,&reqs[threadsCreated].pid,&reqs[threadsCreated].tid,&reqs[threadsCreated].dur,&reqs[threadsCreated].pl);
+            if (pthread_create(&tids[threadsCreated],NULL,threadFunc,&reqs[threadsCreated]) != 0)
             {
                 fprintf(stderr,"Couldn't create thread.\n");
                 exit(1);
             }
-            i++;
+            threadsCreated++;
         }
         fclose(reqFifoPtr);
-        /*
-        if (nanosleep(&time1,&time2) < 0)
-        {
-            fprintf(stderr,"Couldn't sleep.\n");
-            exit(1);
-        }*/
     }
     
-
-    pthread_mutex_lock(&flagMut);
-    flag = 0;
-    pthread_mutex_unlock(&flagMut);
+    needCleanup = 0;
+    
     unlink(fifoname);
 
     sigset_t mask;
@@ -207,7 +230,7 @@ int main(int argc, char* argv[])
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
     
-    for (int i2 = 0; i2 < i; i2++) 
+    for (int i2 = 0; i2 < threadsCreated; i2++) 
     {
         if (pthread_join(tids[i2],NULL) != 0)
         {
