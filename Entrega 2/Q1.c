@@ -70,7 +70,7 @@ void* threadFunc(void * arg)
     }
     else
     {
-        fprintf(ansFifoPtr,"[%s,%s,%s,%d,%s]\n",i,pid,tid,dur,i);
+        fprintf(ansFifoPtr,"[ %s , %s , %s , %d , %s ]\n",i,pid,tid,dur,i);
 
         printf("%ld ; %s ; %s ; %s ; %d ; %s ; ENTER\n",time(NULL),i,pid,tid,dur,i);
 
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         usleep(5000);
     }
 
-    printf("Cheguei aqui\n");
+
 
     char str[STR_LEN] = "";
     //char* i, *pid, *tid, *durs;
@@ -196,13 +196,13 @@ int main(int argc, char* argv[])
 
     for (int i2 = 0; i2 < k; i2++)
     {
-        printf("Inicio i2: %d\n",i2);
+        
         if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
         }
-        printf("Fim i2: %d\n",i2);
+        
     } 
     
     
