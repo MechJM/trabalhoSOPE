@@ -8,9 +8,12 @@
 #include <sys/types.h>
 #include <time.h>
 #include <errno.h>
+#include <semaphore.h>
 
 #define NUM_THREADS 100000
+#define NUM_PLACES 100000
 #define STR_LEN 200
+#define TSHARED 0
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
@@ -18,6 +21,9 @@ int needCleanup = 1;
 pthread_mutex_t flagMut = PTHREAD_MUTEX_INITIALIZER;
 int threadsCreated = 0;
 pthread_t tids[NUM_THREADS];
+sem_t bathroomPlace;
+int places[NUM_PLACES];
+long int nplaces = 0,nthreads = 0;
 
 struct message
 {
@@ -106,7 +112,20 @@ void* threadFunc(void* arg)
     }
     
     
-    if (flag) pl = i;
+    if (flag)
+    {
+        sem_wait(&bathroomPlace);
+        for (int i = 0; i < nplaces; i++)
+        {
+            if (places[i] == 0)
+            {
+                places[i] = 1;
+                pl = (i + 1);
+                break;
+            }
+        }
+        sem_post(&bathroomPlace);
+    } 
     else pl = -1;
 
     
@@ -153,7 +172,7 @@ int main(int argc, char* argv[])
     }
 
     int nsecs;
-    //long int nplaces,nthreads;
+    
 
     for (int i = 1; argv[i] != NULL; i++)
     {
@@ -165,17 +184,19 @@ int main(int argc, char* argv[])
         else if (strcmp("-l",argv[i]) == 0)
         {
             i++;
-            //nplaces = atoi(argv[i]);
+            nplaces = atoi(argv[i]);
         }
         else if (strcmp("-n",argv[i]) == 0)
         {
             i++;
-            //nthreads = atoi(argv[i]);
+            nthreads = atoi(argv[i]);
         }
         else strcpy(fifoname,argv[i]);
     }
 
-    
+    for (int i = 0; i < nplaces; i++) places[i] = 0;
+
+    if (nplaces != 0) sem_init(&bathroomPlace,TSHARED,nplaces);
 
     if (mkfifo(fifoname,0600) < 0)
     {
@@ -207,17 +228,21 @@ int main(int argc, char* argv[])
         {
             fprintf(stderr,"Couldn't open public FIFO. Error value: %d\n'",errno);
             exit(1);
-        } 
-        while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
-        {
-            sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[threadsCreated].i,&reqs[threadsCreated].pid,&reqs[threadsCreated].tid,&reqs[threadsCreated].dur,&reqs[threadsCreated].pl);
-            if (pthread_create(&tids[threadsCreated],NULL,threadFunc,&reqs[threadsCreated]) != 0)
-            {
-                fprintf(stderr,"Couldn't create thread.\n");
-                exit(1);
-            }
-            threadsCreated++;
         }
+        if (threadsCreated < nthreads)
+        {
+            while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
+            {
+                sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[threadsCreated].i,&reqs[threadsCreated].pid,&reqs[threadsCreated].tid,&reqs[threadsCreated].dur,&reqs[threadsCreated].pl);
+                if (pthread_create(&tids[threadsCreated],NULL,threadFunc,&reqs[threadsCreated]) != 0)
+                {
+                    fprintf(stderr,"Couldn't create thread.\n");
+                    exit(1);
+                }
+                threadsCreated++;
+            }
+        } 
+        
         fclose(reqFifoPtr);
     }
     
@@ -242,7 +267,7 @@ int main(int argc, char* argv[])
 
 
     pthread_mutex_destroy(&flagMut);
-
+    sem_destroy(&bathroomPlace);
 
     return 0;
 }
