@@ -43,8 +43,6 @@ void * countTime(void * arg)
     return NULL;
 }
 
-
-
 void* threadFunc(void* arg)
 {
     struct message messageData = (*(struct message *)arg);
@@ -77,7 +75,12 @@ void* threadFunc(void* arg)
     else pl = -1;
 
     
-    fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
+    if (fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
+    {
+        fclose(ansFifoPtr);
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
+        pthread_exit(0);
+    }
     
     if (pl != -1)
     {
@@ -154,17 +157,20 @@ int main(int argc, char* argv[])
     }
     
 
-    
-
     pthread_t tids[NUM_THREADS];
     struct message reqs[NUM_THREADS];
     char request[STR_LEN] = "";
-
+/*
+    struct timespec time1,time2;
+    time1.tv_sec = 0;
+    time1.tv_nsec = 5000000;
+*/
     
     int i = 0; 
 
     while (flag)
     {
+        
         FILE* reqFifoPtr = fopen(fifoname,"r");
         if (reqFifoPtr == NULL)
         {
@@ -182,6 +188,12 @@ int main(int argc, char* argv[])
             i++;
         }
         fclose(reqFifoPtr);
+        /*
+        if (nanosleep(&time1,&time2) < 0)
+        {
+            fprintf(stderr,"Couldn't sleep.\n");
+            exit(1);
+        }*/
     }
     
 

@@ -68,10 +68,6 @@ void* threadFunc(void * arg)
         pthread_exit(0);
     }
 
-
-
-
-
     if (fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
     {
         pthread_mutex_unlock(&mutFifo);
