@@ -75,7 +75,7 @@ void* threadFunc(void * arg)
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
-
+    printf("%s\n",answer);
     if (strstr(answer,"-1") != NULL) 
     {
         pthread_mutex_lock(&mut);

@@ -9,12 +9,20 @@
 #include <time.h>
 
 #define NUM_THREADS 100000
-#define STR_LEN 100
+#define STR_LEN 200
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
+pthread_mutex_t flagMut = PTHREAD_MUTEX_INITIALIZER;
 
-pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
+struct message
+{
+    int i;
+    int pid;
+    long int tid;
+    int dur;
+    int pl;
+};
 
 void sigalrm_handler(int signo)
 {
@@ -23,64 +31,61 @@ void sigalrm_handler(int signo)
         fprintf(stderr,"This handler shouldn't have been called.\n");
         return;
     }
-
+    pthread_mutex_lock(&flagMut);
     flag = 0;
+    pthread_mutex_unlock(&flagMut);
 }
 
-void* threadFunc(void * arg)
+void* threadFunc(void* arg)
 {
-    arg = arg; //without this the compiler reports an error about an unused parameter
+    struct message messageData = (*(struct message *)arg);
 
-    char str[STR_LEN] = "";
-
-    pthread_mutex_lock(&mutFifo);
-    FILE* reqFifoPtr = fopen(fifoname,"r");
-    fgets(str, STR_LEN, reqFifoPtr);
-    fclose(reqFifoPtr);
-    pthread_mutex_unlock(&mutFifo);
-
-    // fprintf(reqFifoPtr,"[%d,%d,%ld,%d,%d]\n",i,pid,tid,dur,pl);
-    //printf("%s",str);
-
-    //char* i, *pid, *tid, *durs;
-    char i[STR_LEN] = "";
-    char pid[STR_LEN] = "";
-    char tid[STR_LEN] = "";
-    char durs[STR_LEN] = "";
-    
-    int pl;
-    sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
-    int dur = atoi(durs);
+    int i = messageData.i;
+    int pid = messageData.pid;
+    long int tid = messageData.tid;
+    int dur = messageData.dur;
+    int pl = messageData.pl;
    
-
-
-    printf("%ld ; %s ; %s ; %s ; %d ; %s ; RECVD\n",time(NULL),i,pid,tid,dur,i);
-    
-
     char ansFifoName[STR_LEN] = "";
-    int pid_num = atoi(pid);
-    long int tid_num = atol(tid);
-    sprintf(ansFifoName,"/tmp/%d.%ld",pid_num,tid_num);
-    
+    sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
 
+    pid = getpid();
+    tid = pthread_self();
+
+    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; RECVD\n",time(NULL),i,pid,tid,dur,pl);
+     
+
+    printf("Cheguei aqui\n"); 
     FILE* ansFifoPtr = fopen(ansFifoName,"w");
-    if(ansFifoPtr == NULL)
+    if (ansFifoPtr == NULL)
     {
-        printf("%ld ; %s ; %s ; %s ; %s ; %s ; GAVUP\n",time(NULL),i,pid,tid,durs,i);
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
+        pthread_exit(0);
+    }
+    printf("Cheguei aqui2\n");
+    
+    if (flag) pl = i;
+    else pl = -1;
+
+
+    fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
+    printf("Cheguei aqui3\n");
+    if (pl != -1)
+    {
+        
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
+        printf("Cheguei aqui4\n");
+        usleep(dur*1000);
+
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; TIMUP\n",time(NULL),i,pid,tid,dur,pl);
     }
     else
     {
-        fprintf(ansFifoPtr,"[ %s , %s , %s , %d , %s ]\n",i,pid,tid,dur,i);
-
-        printf("%ld ; %s ; %s ; %s ; %d ; %s ; ENTER\n",time(NULL),i,pid,tid,dur,i);
-
-        usleep(dur*1000);
-
-        printf("%ld ; %s ; %s ; %s ; %d ; %s ; TIMUP\n",time(NULL),i,pid,tid,dur,i);
-
-        fclose(ansFifoPtr);
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; 2LATE\n",time(NULL),i,pid,tid,dur,pl);
     }
-    
+    printf("Cheguei aqui5\n");
+    fclose(ansFifoPtr);
+
     return NULL;
 }
 
@@ -92,8 +97,8 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-
     int nsecs;
+    //long int nplaces,nthreads;
 
     for (int i = 1; argv[i] != NULL; i++)
     {
@@ -102,8 +107,28 @@ int main(int argc, char* argv[])
             i++;
             nsecs = atoi(argv[i]);
         }
+        else if (strcmp("-l",argv[i]) == 0)
+        {
+            i++;
+            //nplaces = atoi(argv[i]);
+        }
+        else if (strcmp("-n",argv[i]) == 0)
+        {
+            i++;
+            //nthreads = atoi(argv[i]);
+        }
         else strcpy(fifoname,argv[i]);
     }
+
+    
+
+    if (mkfifo(fifoname,0600) < 0)
+    {
+        fprintf(stderr,"Couldn't create public FIFO.\n");
+        exit(1);
+    }
+
+    
 
     struct sigaction action;
     action.sa_handler = sigalrm_handler;
@@ -115,99 +140,55 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    struct sigaction action2;
-    action2.sa_handler = SIG_IGN;
-    sigemptyset(&action2.sa_mask);
-    action2.sa_flags = 0;
-    if (sigaction(SIGPIPE,&action2,NULL) < 0)
-    {
-        fprintf(stderr,"Couldn't install signal handler.\n");
-        exit(1);
-    }
-
     alarm(nsecs);
 
-    if (mkfifo(fifoname,0600) < 0)
-    {
-        fprintf(stderr,"Couldn't create public FIFO.\n");
-        exit(1);
-    }
-
     pthread_t tids[NUM_THREADS];
+    struct message reqs[NUM_THREADS];
+    char request[STR_LEN] = "";
 
-    int k = 0;
+    
+    int i = 0; 
+
     while (flag)
     {
-        if (pthread_create(&tids[k],NULL,threadFunc,NULL) != 0)
+        FILE* reqFifoPtr = fopen(fifoname,"r");
+        if (reqFifoPtr == NULL) exit(1);
+        while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
         {
-            fprintf(stderr,"Couldn't create thread.\n");
-            exit(1);
+            sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[i].i,&reqs[i].pid,&reqs[i].tid,&reqs[i].dur,&reqs[i].pl);
+            if (pthread_create(&tids[i],NULL,threadFunc,&reqs[i]) != 0)
+            {
+                fprintf(stderr,"Couldn't create thread.\n");
+                exit(1);
+            }
+            i++;
+            usleep(5000);
         }
-        k++;
-        usleep(5000);
-    }
-
-
-
-    char str[STR_LEN] = "";
-    //char* i, *pid, *tid, *durs;
-    char i[STR_LEN] = "";
-    char pid[STR_LEN] = "";
-    char tid[STR_LEN] = "";
-    char durs[STR_LEN] = "";
-
-    pthread_mutex_lock(&mutFifo);
-    FILE* fifoPtr =  fopen(fifoname,"rw");
-  
-    int pl;
-
-    while(1)
-    {   
-        if (fgets(str, STR_LEN, fifoPtr) == NULL)
-            break;
-        
-        sscanf(str,"[ %s , %s , %s , %s , %d ]\n",i,pid,tid,durs,&pl);
-        printf("%ld ; %s ; %s ; %s ; %s ; %s ; 2LATE\n",time(NULL),i,pid,tid,durs,i);
-        
-        char ansFifoName[STR_LEN] = "";
-        int pid_num = atoi(pid);
-        long int tid_num = atol(tid);
-
-        sprintf(ansFifoName,"/tmp/%d.%ld",pid_num,tid_num);
-        FILE* ansFifoPtr = fopen(ansFifoName,"w");
-        if(ansFifoPtr == NULL)
-        {
-            printf("%ld ; %s ; %s ; %s ; %s ; %s ; GAVUP\n",time(NULL),i,pid,tid,durs,i);
-        }
-        else
-        {
-            fprintf(ansFifoPtr,"[ %s , %s , %s , -1 , -1 ]\n",i,pid,tid);
-            fclose(ansFifoPtr);
-        }
+        fclose(reqFifoPtr);
     }
     
-    fclose(fifoPtr);
-    pthread_mutex_unlock(&mutFifo);
+
+    pthread_mutex_lock(&flagMut);
+    flag = 0;
+    pthread_mutex_unlock(&flagMut);
     unlink(fifoname);
 
     sigset_t mask;
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
-    for (int i2 = 0; i2 < k; i2++)
+    
+    for (int i2 = 0; i2 < i; i2++) 
     {
-        
         if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
         }
-        
-    } 
-    
-    
+    }
 
-    pthread_mutex_destroy(&mutFifo);
+    pthread_mutex_destroy(&flagMut);
+
 
     return 0;
 }
