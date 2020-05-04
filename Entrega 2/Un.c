@@ -18,15 +18,23 @@ int flag = 1;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
 
-void sigalrm_handler(int signo)
-{
-    if (signo != SIGALRM)
-    {
-        fprintf(stderr,"This handler shouldn't have been called.\n");
-        return;
-    }
 
+void * countTime(void * arg)
+{
+    int time = *((int * )arg);
+
+    struct timespec time1,time2;
+
+    time1.tv_sec = time;
+    time1.tv_nsec = 0;
+
+    if (nanosleep(&time1,&time2) < 0)
+    {
+        fprintf(stderr,"Couldn't sleep.\n");
+        pthread_exit(0);
+    }
     flag = 0;
+    return NULL;
 }
 
 void* threadFunc(void * arg)
@@ -58,8 +66,19 @@ void* threadFunc(void * arg)
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
         unlink(ansFifoName);
         pthread_exit(0);
-    } 
-    fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
+    }
+
+
+
+
+
+    if (fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
+    {
+        pthread_mutex_unlock(&mutFifo);
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        unlink(ansFifoName);
+        pthread_exit(0);
+    }
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
     printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
@@ -71,11 +90,11 @@ void* threadFunc(void * arg)
         unlink(ansFifoName);
         pthread_exit(0);
     }
-    //usleep(1000);
+    
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
-    printf("%s\n",answer);
+    
     if (strstr(answer,"-1") != NULL) 
     {
         pthread_mutex_lock(&mut);
@@ -119,19 +138,19 @@ int main(int argc, char* argv[])
         else strcpy(fifoname,argv[i]);
     }
 
-    struct sigaction action;
-    action.sa_handler = sigalrm_handler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    if (sigaction(SIGALRM,&action,NULL) < 0)
+    pthread_t timeThread;
+
+    if (pthread_create(&timeThread,NULL,countTime,&nsecs) != 0)
     {
-        fprintf(stderr,"Couldn't install signal handler.\n");
+        fprintf(stderr,"Couldn't create time thread.\n");
         exit(1);
     }
 
-    alarm(nsecs);
-
     pthread_t tids[NUM_THREADS];
+
+    struct timespec time1,time2;
+    time1.tv_sec = 0;
+    time1.tv_nsec = 5000000;
 
     int i = 0;
     while (flag)
@@ -142,7 +161,11 @@ int main(int argc, char* argv[])
             exit(1);
         }
         i++;
-        usleep(5000);
+        if (nanosleep(&time1,&time2) < 0)
+        {
+            fprintf(stderr,"Couldn't sleep.\n");
+            exit(1);
+        }
     }
 
     sigset_t mask;
@@ -153,15 +176,13 @@ int main(int argc, char* argv[])
   
     for (int i2 = 0; i2 < i; i2++) 
     {
-        
         if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
         }
-        
     }
-    
+    pthread_join(timeThread,NULL);
     
 
     pthread_mutex_destroy(&mut);

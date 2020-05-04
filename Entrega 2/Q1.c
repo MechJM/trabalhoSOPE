@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#include <errno.h>
 
 #define NUM_THREADS 100000
 #define STR_LEN 200
@@ -24,17 +25,25 @@ struct message
     int pl;
 };
 
-void sigalrm_handler(int signo)
+void * countTime(void * arg)
 {
-    if (signo != SIGALRM)
+    int time = *((int * )arg);
+
+    struct timespec time1,time2;
+
+    time1.tv_sec = time;
+    time1.tv_nsec = 0;
+
+    if (nanosleep(&time1,&time2) < 0)
     {
-        fprintf(stderr,"This handler shouldn't have been called.\n");
-        return;
+        fprintf(stderr,"Couldn't sleep.\n");
+        pthread_exit(0);
     }
-    pthread_mutex_lock(&flagMut);
     flag = 0;
-    pthread_mutex_unlock(&flagMut);
+    return NULL;
 }
+
+
 
 void* threadFunc(void* arg)
 {
@@ -55,27 +64,35 @@ void* threadFunc(void* arg)
     printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; RECVD\n",time(NULL),i,pid,tid,dur,pl);
      
 
-    printf("Cheguei aqui\n"); 
+    
     FILE* ansFifoPtr = fopen(ansFifoName,"w");
     if (ansFifoPtr == NULL)
     {
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
         pthread_exit(0);
     }
-    printf("Cheguei aqui2\n");
+    
     
     if (flag) pl = i;
     else pl = -1;
 
-
+    
     fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl);
-    printf("Cheguei aqui3\n");
+    
     if (pl != -1)
     {
         
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
-        printf("Cheguei aqui4\n");
-        usleep(dur*1000);
+        
+        struct timespec time1,time2;
+        time1.tv_sec = 0;
+        time1.tv_nsec = dur * 1000000;
+        
+        if (nanosleep(&time1,&time2) < 0)
+        {
+            fprintf(stderr,"Couldn't sleep.\n");
+            pthread_exit(0);
+        }
 
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; TIMUP\n",time(NULL),i,pid,tid,dur,pl);
     }
@@ -83,7 +100,7 @@ void* threadFunc(void* arg)
     {
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; 2LATE\n",time(NULL),i,pid,tid,dur,pl);
     }
-    printf("Cheguei aqui5\n");
+    
     fclose(ansFifoPtr);
 
     return NULL;
@@ -128,19 +145,16 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    
+    pthread_t timeThread;
 
-    struct sigaction action;
-    action.sa_handler = sigalrm_handler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    if (sigaction(SIGALRM,&action,NULL) < 0)
+    if (pthread_create(&timeThread,NULL,countTime,&nsecs) != 0)
     {
-        fprintf(stderr,"Couldn't install signal handler.\n");
+        fprintf(stderr,"Couldn't create time thread.\n");
         exit(1);
     }
+    
 
-    alarm(nsecs);
+    
 
     pthread_t tids[NUM_THREADS];
     struct message reqs[NUM_THREADS];
@@ -152,7 +166,11 @@ int main(int argc, char* argv[])
     while (flag)
     {
         FILE* reqFifoPtr = fopen(fifoname,"r");
-        if (reqFifoPtr == NULL) exit(1);
+        if (reqFifoPtr == NULL)
+        {
+            fprintf(stderr,"Couldn't open public FIFO. Error value: %d\n'",errno);
+            exit(1);
+        } 
         while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
         {
             sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[i].i,&reqs[i].pid,&reqs[i].tid,&reqs[i].dur,&reqs[i].pl);
@@ -162,7 +180,6 @@ int main(int argc, char* argv[])
                 exit(1);
             }
             i++;
-            usleep(5000);
         }
         fclose(reqFifoPtr);
     }
@@ -186,6 +203,8 @@ int main(int argc, char* argv[])
             exit(1);
         }
     }
+    pthread_join(timeThread,NULL);
+
 
     pthread_mutex_destroy(&flagMut);
 
