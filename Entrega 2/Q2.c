@@ -10,10 +10,22 @@
 #include <errno.h>
 #include <semaphore.h>
 
+#include "queue.h"
+
 #define NUM_THREADS 100000
 #define NUM_PLACES 100000
 #define STR_LEN 200
 #define TSHARED 0
+
+struct message
+{
+    int i;
+    int pid;
+    long int tid;
+    int dur;
+    int pl;
+};
+
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
@@ -24,15 +36,10 @@ pthread_t tids[NUM_THREADS];
 sem_t bathroomPlace;
 int places[NUM_PLACES];
 long int nplaces = 0,nthreads = 0;
+pthread_mutex_t placeMut = PTHREAD_MUTEX_INITIALIZER;
+struct message reqs[NUM_THREADS];
+pthread_mutex_t queueMut = PTHREAD_MUTEX_INITIALIZER;
 
-struct message
-{
-    int i;
-    int pid;
-    long int tid;
-    int dur;
-    int pl;
-};
 
 void * countTime(void * arg)
 {
@@ -86,79 +93,100 @@ void * countTime(void * arg)
 
 void* threadFunc(void* arg)
 {
-    struct message messageData = (*(struct message *)arg);
+    arg=arg;//otherwise the compiler reports an error about unused parameters
 
-    int i = messageData.i;
-    int pid = messageData.pid;
-    long int tid = messageData.tid;
-    int dur = messageData.dur;
-    int pl = messageData.pl;
-   
-    char ansFifoName[STR_LEN] = "";
-    sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
-
-    pid = getpid();
-    tid = pthread_self();
-
-    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; RECVD\n",time(NULL),i,pid,tid,dur,pl);
-     
-
-    
-    FILE* ansFifoPtr = fopen(ansFifoName,"w");
-    if (ansFifoPtr == NULL)
+    int size = 1;
+    while (size != 0) 
     {
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
-        pthread_exit(0);
-    }
+        int reqIndex;
+        pthread_mutex_lock(&queueMut);
+        reqIndex = queuePop();
+        pthread_mutex_unlock(&queueMut);
+
+        int i = reqs[reqIndex].i;
+        int pid = reqs[reqIndex].pid;
+        long int tid = reqs[reqIndex].tid;
+        int dur = reqs[reqIndex].dur;
+        int pl = reqs[reqIndex].pl;
     
-    
-    if (flag)
-    {
-        sem_wait(&bathroomPlace);
-        for (int i = 0; i < nplaces; i++)
+        char ansFifoName[STR_LEN] = "";
+        sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
+
+        pid = getpid();
+        tid = pthread_self();
+
+        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; RECVD\n",time(NULL),i,pid,tid,dur,pl);
+        
+        FILE* ansFifoPtr = fopen(ansFifoName,"w");
+        if (ansFifoPtr == NULL)
         {
-            if (places[i] == 0)
-            {
-                places[i] = 1;
-                pl = (i + 1);
-                break;
-            }
-        }
-        sem_post(&bathroomPlace);
-    } 
-    else pl = -1;
-
-    
-    if (fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
-    {
-        fclose(ansFifoPtr);
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
-        pthread_exit(0);
-    }
-    
-    if (pl != -1)
-    {
-        
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
-        
-        struct timespec time1,time2;
-        time1.tv_sec = 0;
-        time1.tv_nsec = dur * 1000000;
-        
-        if (nanosleep(&time1,&time2) < 0)
-        {
-            fprintf(stderr,"Couldn't sleep.\n");
+            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
             pthread_exit(0);
         }
+        
+        
+        if (flag)
+        {
+            sem_wait(&bathroomPlace);
+            
+            for (int i = 0; i < nplaces; i++)
+            {
+                pthread_mutex_lock(&placeMut);
+                
+                if (places[i] == 0)
+                {
+                    places[i] = 1;
+                    pthread_mutex_unlock(&placeMut);
+                    pl = (i + 1);
+                    break;
+                }
+                pthread_mutex_unlock(&placeMut);
+            }
+            
+        } 
+        else pl = -1;
 
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; TIMUP\n",time(NULL),i,pid,tid,dur,pl);
+        
+        if (fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
+        {
+            fclose(ansFifoPtr);
+            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
+            pthread_exit(0);
+        }
+        
+        if (pl != -1)
+        {
+            
+            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
+            
+            struct timespec time1,time2;
+            time1.tv_sec = 0;
+            time1.tv_nsec = dur * 1000000;
+            
+            if (nanosleep(&time1,&time2) < 0)
+            {
+                fprintf(stderr,"Couldn't sleep.\n");
+                pthread_exit(0);
+            }
+
+            pthread_mutex_lock(&placeMut);
+            places[pl-1] = 0;
+            pthread_mutex_unlock(&placeMut);
+            sem_post(&bathroomPlace);
+
+            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; TIMUP\n",time(NULL),i,pid,tid,dur,pl);
+        }
+        else
+        {
+            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; 2LATE\n",time(NULL),i,pid,tid,dur,pl);
+        }
+        
+        fclose(ansFifoPtr);
+
+        pthread_mutex_lock(&queueMut);
+        size = queueSize();
+        pthread_mutex_unlock(&queueMut);
     }
-    else
-    {
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; 2LATE\n",time(NULL),i,pid,tid,dur,pl);
-    }
-    
-    fclose(ansFifoPtr);
 
     return NULL;
 }
@@ -172,7 +200,6 @@ int main(int argc, char* argv[])
     }
 
     int nsecs;
-    
 
     for (int i = 1; argv[i] != NULL; i++)
     {
@@ -196,7 +223,10 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < nplaces; i++) places[i] = 0;
 
+    initQueue();
+
     if (nplaces != 0) sem_init(&bathroomPlace,TSHARED,nplaces);
+    else sem_init(&bathroomPlace,TSHARED,NUM_THREADS);
 
     if (mkfifo(fifoname,0600) < 0)
     {
@@ -212,13 +242,12 @@ int main(int argc, char* argv[])
         exit(1);
     }
     
-
     
-    struct message reqs[NUM_THREADS];
     char request[STR_LEN] = "";
+    
+    int requestIndex = 0;
 
-    
-    
+    if (nthreads == 0) nthreads = NUM_THREADS;
 
     while (flag)
     {
@@ -229,19 +258,24 @@ int main(int argc, char* argv[])
             fprintf(stderr,"Couldn't open public FIFO. Error value: %d\n'",errno);
             exit(1);
         }
-        if (threadsCreated < nthreads)
+        while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
         {
-            while (fgets(request,STR_LEN,reqFifoPtr) != NULL)
+            sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[requestIndex].i,&reqs[requestIndex].pid,&reqs[requestIndex].tid,&reqs[requestIndex].dur,&reqs[requestIndex].pl);
+            pthread_mutex_lock(&queueMut);
+            queuePush(requestIndex);
+            pthread_mutex_unlock(&queueMut);
+            requestIndex++;
+            if (threadsCreated < nthreads)
             {
-                sscanf(request,"[ %d , %d , %ld , %d , %d ]",&reqs[threadsCreated].i,&reqs[threadsCreated].pid,&reqs[threadsCreated].tid,&reqs[threadsCreated].dur,&reqs[threadsCreated].pl);
-                if (pthread_create(&tids[threadsCreated],NULL,threadFunc,&reqs[threadsCreated]) != 0)
-                {
-                    fprintf(stderr,"Couldn't create thread.\n");
-                    exit(1);
-                }
-                threadsCreated++;
-            }
-        } 
+                
+                if (pthread_create(&tids[threadsCreated],NULL,threadFunc,NULL) != 0)
+                    {
+                        fprintf(stderr,"Couldn't create thread.\n");
+                        exit(1);
+                    }
+                    threadsCreated++;
+            } 
+        }
         
         fclose(reqFifoPtr);
     }
@@ -254,7 +288,6 @@ int main(int argc, char* argv[])
     sigfillset(&mask);
     sigprocmask(SIG_SETMASK, &mask, NULL);
 
-    
     for (int i2 = 0; i2 < threadsCreated; i2++) 
     {
         if (pthread_join(tids[i2],NULL) != 0)
