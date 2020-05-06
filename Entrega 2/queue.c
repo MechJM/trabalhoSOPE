@@ -1,4 +1,5 @@
 #include "queue.h"
+#include <stdio.h>
 
 int queue[NUM_POS];
 int size;
@@ -29,6 +30,8 @@ void queuePush(int index)
 
 int queuePop()
 {
+    if (size == 0) return -1;
+
     int res;
     for (int i = 0; i < NUM_POS; i++)
     {

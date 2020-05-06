@@ -98,14 +98,15 @@ void * countTime(void * arg)
 void* threadFunc(void* arg)
 {
     arg=arg;//otherwise the compiler reports an error about unused parameters
-
     int size = 1;
-    while (size != 0) 
+    while (size != 0 || flag) 
     {
         int reqIndex;
         pthread_mutex_lock(&queueMut);
         reqIndex = queuePop();
         pthread_mutex_unlock(&queueMut);
+
+        if (reqIndex == -1) continue;
 
         int i = reqs[reqIndex].i;
         int pid = reqs[reqIndex].pid;
@@ -157,13 +158,15 @@ void* threadFunc(void* arg)
             printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
             pthread_exit(0);
         }
-        
+
+        struct timespec time1,time2;
+
         if (pl != -1)
         {
             
             printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
             
-            struct timespec time1,time2;
+            
             time1.tv_sec = 0;
             time1.tv_nsec = dur * 1000000;
             
@@ -187,11 +190,22 @@ void* threadFunc(void* arg)
         
         fclose(ansFifoPtr);
 
+        
+        /*
+        time1.tv_nsec = 5000000;
+        time1.tv_sec = 0;
+
+        if (nanosleep(&time1,&time2) < 0)
+        {
+            fprintf(stderr,"Couldn't sleep.\n");
+            pthread_exit(0);
+        }*/
+        
+
         pthread_mutex_lock(&queueMut);
         size = queueSize();
         pthread_mutex_unlock(&queueMut);
     }
-
     return NULL;
 }
 
