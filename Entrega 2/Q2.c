@@ -85,6 +85,10 @@ void * countTime(void * arg)
         }
 
         pthread_mutex_destroy(&flagMut);
+        pthread_mutex_destroy(&placeMut);
+        pthread_mutex_destroy(&queueMut);
+        sem_destroy(&bathroomPlace);
+        
         exit(0);
     }
 
@@ -300,6 +304,8 @@ int main(int argc, char* argv[])
 
 
     pthread_mutex_destroy(&flagMut);
+    pthread_mutex_destroy(&placeMut);
+    pthread_mutex_destroy(&queueMut);
     sem_destroy(&bathroomPlace);
 
     return 0;
