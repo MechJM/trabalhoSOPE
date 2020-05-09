@@ -35,7 +35,7 @@ int threadsCreated = 0;
 pthread_t tids[NUM_THREADS];
 sem_t bathroomPlace;
 int places[NUM_PLACES];
-long int nplaces = 0,nthreads = 0;
+long int nplaces = NUM_PLACES,nthreads = NUM_THREADS;
 pthread_mutex_t placeMut = PTHREAD_MUTEX_INITIALIZER;
 struct message reqs[NUM_THREADS];
 pthread_mutex_t queueMut = PTHREAD_MUTEX_INITIALIZER;
@@ -136,10 +136,12 @@ void* threadFunc(void* arg)
             
             for (int i = 0; i < nplaces; i++)
             {
+                
                 pthread_mutex_lock(&placeMut);
                 
                 if (places[i] == 0)
                 {
+                    
                     places[i] = 1;
                     pthread_mutex_unlock(&placeMut);
                     pl = (i + 1);
@@ -150,7 +152,7 @@ void* threadFunc(void* arg)
             
         } 
         else pl = -1;
-
+    
         
         if (fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
         {
@@ -190,21 +192,17 @@ void* threadFunc(void* arg)
         
         fclose(ansFifoPtr);
 
-        
-        /*
-        time1.tv_nsec = 5000000;
-        time1.tv_sec = 0;
-
-        if (nanosleep(&time1,&time2) < 0)
+        if (nthreads != NUM_THREADS)
         {
-            fprintf(stderr,"Couldn't sleep.\n");
-            pthread_exit(0);
-        }*/
+            pthread_mutex_lock(&queueMut);
+            size = queueSize();
+            pthread_mutex_unlock(&queueMut);
+        }
+        else
+        {
+            break;
+        }
         
-
-        pthread_mutex_lock(&queueMut);
-        size = queueSize();
-        pthread_mutex_unlock(&queueMut);
     }
     return NULL;
 }
@@ -243,8 +241,8 @@ int main(int argc, char* argv[])
 
     initQueue();
 
-    if (nplaces != 0) sem_init(&bathroomPlace,TSHARED,nplaces);
-    else sem_init(&bathroomPlace,TSHARED,NUM_THREADS);
+    sem_init(&bathroomPlace,TSHARED,nplaces);
+    
 
     if (mkfifo(fifoname,0600) < 0)
     {
