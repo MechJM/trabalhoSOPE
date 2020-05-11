@@ -4,6 +4,8 @@ OBJS_U=Un.o
 OBJS_Q1=Q1.o
 OBJS_Q2=Q2.o queue.o
 
+default: Q2 U2
+
 Q1: $(OBJS_Q1)
 	$(CC) $(CFLAGS) $(OBJS_Q1) -o Q1
 
