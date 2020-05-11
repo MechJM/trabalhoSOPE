@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -pedantic -pthread -lrt
-OBJS_U=Un.o 
+OBJS_U=Un.o
 OBJS_Q1=Q1.o
 OBJS_Q2=Q2.o queue.o
 
@@ -27,7 +27,7 @@ U1: $(OBJS_U)
 U2: $(OBJS_U)
 	$(CC) $(CFLAGS) $(OBJS_U) -o U2
 
-Un.o: Un.c   
+Un.o: Un.c
 	$(CC) $(CFLAGS) -c Un.c 
 
 clean:

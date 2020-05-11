@@ -8,8 +8,22 @@
 #include <sys/types.h>
 #include <time.h>
 
+
 #define NUM_THREADS 100000
+#define DONT_EXECUTE 0
 #define STR_LEN 100
+
+struct logInfo 
+{
+    int i;
+    int pid;
+    long int tid;
+    int dur;
+    int pl;
+    char oper[STR_LEN];
+};
+
+void sigusr_handler(int signo){if (signo != SIGUSR1) fprintf(stderr,"This handler shouldn't have been called.\n");}
 
 char fifoname[STR_LEN] = "";
 int seqNum = 1;
@@ -17,7 +31,7 @@ int flag = 1;
 
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutFifo = PTHREAD_MUTEX_INITIALIZER;
-
+int needCleanup[NUM_THREADS];
 
 void * countTime(void * arg)
 {
@@ -28,18 +42,18 @@ void * countTime(void * arg)
     time1.tv_sec = time;
     time1.tv_nsec = 0;
 
-    if (nanosleep(&time1,&time2) < 0)
-    {
-        fprintf(stderr,"Couldn't sleep.\n");
-        pthread_exit(0);
-    }
+    nanosleep(&time1,&time2);
     flag = 0;
     return NULL;
 }
 
+
+
 void* threadFunc(void * arg)
 {
-    arg = arg; //without this the compiler reports an error about an unused parameter
+    int index = *(int *)arg;
+
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
 
     pthread_mutex_lock(&mut);
     int i = seqNum++;
@@ -49,6 +63,9 @@ void* threadFunc(void * arg)
     pthread_t tid = pthread_self();
     int dur = rand() % 20 + 1;
     int pl = -1;
+
+    struct logInfo log;
+    
 
     char ansFifoName[STR_LEN] = "";
     sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
@@ -72,6 +89,7 @@ void* threadFunc(void * arg)
     {
         pthread_mutex_unlock(&mutFifo);
         printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        fclose(reqFifoPtr);
         unlink(ansFifoName);
         pthread_exit(0);
     }
@@ -87,9 +105,18 @@ void* threadFunc(void * arg)
         pthread_exit(0);
     }
     
+    log.i = i;
+    log.pid = pid;
+    log.tid = tid;
+    log.dur = dur;
+    log.pl = pl;
+    strcpy(log.oper,"FAILD");
+   
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
     fclose(ansFifoPtr);
+
+    
     
     if (strstr(answer,"-1") != NULL) 
     {
@@ -108,6 +135,8 @@ void* threadFunc(void * arg)
     } 
 
     unlink(ansFifoName);
+
+    needCleanup[index] = 0;
     
     return NULL;
 }
@@ -120,7 +149,19 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = sigusr_handler;
+    if (sigaction(SIGUSR1,&action,NULL) < 0)
+    {
+        fprintf(stderr,"Couldn't install handler.\n");
+        exit(1);
+    }
+
     srand(time(NULL));
+
+    for (int i = 0; i < NUM_THREADS; i++) needCleanup[i] = 1;
 
     int nsecs;
 
@@ -148,10 +189,13 @@ int main(int argc, char* argv[])
     time1.tv_sec = 0;
     time1.tv_nsec = 5000000;
 
+    int indexes[NUM_THREADS];
+
     int i = 0;
     while (flag)
     {
-        if (pthread_create(&tids[i],NULL,threadFunc,NULL) != 0)
+        indexes[i] = i;
+        if (pthread_create(&tids[i],NULL,threadFunc,&indexes[i]) != 0)
         {
             fprintf(stderr,"Couldn't create thread.\n");
             exit(1);
@@ -164,20 +208,18 @@ int main(int argc, char* argv[])
         }
     }
 
-    sigset_t mask;
-    sigfillset(&mask);
-    sigprocmask(SIG_SETMASK, &mask, NULL);
-
-    
   
     for (int i2 = 0; i2 < i; i2++) 
     {
+        if (needCleanup[i2]) continue;
         if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");
             exit(1);
         }
     }
+
+    pthread_kill(timeThread,SIGUSR1);
     pthread_join(timeThread,NULL);
     
 
