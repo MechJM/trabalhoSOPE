@@ -23,7 +23,8 @@ struct logInfo
     char oper[STR_LEN];
 };
 
-void sigusr_handler(int signo){if (signo != SIGUSR1) fprintf(stderr,"This handler shouldn't have been called.\n");}
+void sigusr1_handler(int signo){if (signo != SIGUSR1) fprintf(stderr,"This handler shouldn't have been called.\n");}
+void sigusr2_handler(int signo){if (signo != SIGUSR2) fprintf(stderr,"This handler shouldn't have been called.\n"); pthread_exit(0);}
 
 char fifoname[STR_LEN] = "";
 int seqNum = 1;
@@ -53,7 +54,15 @@ void* threadFunc(void * arg)
 {
     int index = *(int *)arg;
 
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = sigusr2_handler;
+    if (sigaction(SIGUSR2,&action,NULL) < 0)
+    {
+        fprintf(stderr,"Couldn't install handler.\n");
+        pthread_exit(0);
+    }
 
     pthread_mutex_lock(&mut);
     int i = seqNum++;
@@ -152,7 +161,7 @@ int main(int argc, char* argv[])
     struct sigaction action;
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = sigusr_handler;
+    action.sa_handler = sigusr1_handler;
     if (sigaction(SIGUSR1,&action,NULL) < 0)
     {
         fprintf(stderr,"Couldn't install handler.\n");
@@ -211,7 +220,7 @@ int main(int argc, char* argv[])
   
     for (int i2 = 0; i2 < i; i2++) 
     {
-        if (needCleanup[i2]) continue;
+        if (needCleanup[i2]) pthread_kill(tids[i2],SIGUSR2);
         if (pthread_join(tids[i2],NULL) != 0)
         {
             fprintf(stderr,"Couldn't wait for thread.\n");

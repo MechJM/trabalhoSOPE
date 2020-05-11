@@ -160,7 +160,7 @@ void* threadFunc(void* arg)
             printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
             pthread_exit(0);
         }
-
+        
         struct timespec time1,time2;
 
         if (pl != -1)
@@ -255,6 +255,16 @@ int main(int argc, char* argv[])
     if (pthread_create(&timeThread,NULL,countTime,&nsecs) != 0)
     {
         fprintf(stderr,"Couldn't create time thread.\n");
+        exit(1);
+    }
+
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_handler = SIG_IGN;
+    action.sa_flags = 0;
+    if (sigaction(SIGPIPE,&action,NULL) < 0)
+    {
+        fprintf(stderr,"Couldn't install handler.\n");
         exit(1);
     }
     
