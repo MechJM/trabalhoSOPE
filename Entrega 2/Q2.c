@@ -26,6 +26,14 @@ struct message
     int pl;
 };
 
+void printLog(int i, int dur, int pl, char* oper)
+{
+    int pid = getpid();
+    long int tid = pthread_self();
+
+    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; %s\n",time(NULL),i,pid,tid,dur,pl,oper);
+}
+
 
 char fifoname[STR_LEN] = "";
 int flag = 1;
@@ -120,12 +128,12 @@ void* threadFunc(void* arg)
         pid = getpid();
         tid = pthread_self();
 
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; RECVD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"RECVD");
         
         FILE* ansFifoPtr = fopen(ansFifoName,"w");
         if (ansFifoPtr == NULL)
         {
-            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
+            printLog(i,dur,pl,"GAVUP");
             pthread_exit(0);
         }
         
@@ -157,7 +165,7 @@ void* threadFunc(void* arg)
         if (fprintf(ansFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
         {
             fclose(ansFifoPtr);
-            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; GAVUP\n",time(NULL),i,pid,tid,dur,pl);
+            printLog(i,dur,pl,"GAVUP");
             pthread_exit(0);
         }
         
@@ -166,7 +174,7 @@ void* threadFunc(void* arg)
         if (pl != -1)
         {
             
-            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; ENTER\n",time(NULL),i,pid,tid,dur,pl);
+            printLog(i,dur,pl,"ENTER");
             
             
             time1.tv_sec = 0;
@@ -183,11 +191,11 @@ void* threadFunc(void* arg)
             pthread_mutex_unlock(&placeMut);
             sem_post(&bathroomPlace);
 
-            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; TIMUP\n",time(NULL),i,pid,tid,dur,pl);
+            printLog(i,dur,pl,"TIMUP");
         }
         else
         {
-            printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; 2LATE\n",time(NULL),i,pid,tid,dur,pl);
+            printLog(i,dur,pl,"2LATE");
         }
         
         fclose(ansFifoPtr);

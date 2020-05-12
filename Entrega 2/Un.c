@@ -13,15 +13,6 @@
 #define DONT_EXECUTE 0
 #define STR_LEN 100
 
-struct logInfo 
-{
-    int i;
-    int pid;
-    long int tid;
-    int dur;
-    int pl;
-    char oper[STR_LEN];
-};
 
 void printLog(int i, int dur, int pl, char* oper)
 {
@@ -79,7 +70,6 @@ void* threadFunc(void * arg)
     int dur = rand() % 20 + 1;
     int pl = -1;
 
-    struct logInfo log;
     
 
     char ansFifoName[STR_LEN] = "";
@@ -120,12 +110,7 @@ void* threadFunc(void * arg)
         pthread_exit(0);
     }
     
-    log.i = i;
-    log.pid = pid;
-    log.tid = tid;
-    log.dur = dur;
-    log.pl = pl;
-    strcpy(log.oper,"FAILD");
+    
    
     char answer[STR_LEN] = "";
     fgets(answer,STR_LEN,ansFifoPtr);
@@ -146,7 +131,7 @@ void* threadFunc(void * arg)
         long int buffer3;
         sscanf(answer,"[ %d , %d , %ld , %d , %d ]",&buffer,&buffer2,&buffer3,&buffer4,&pl);
 
-        printLog(i,dur,pl,"TIMUP");
+        printLog(i,dur,pl,"IAMIN");
     } 
 
     unlink(ansFifoName);
