@@ -23,6 +23,14 @@ struct logInfo
     char oper[STR_LEN];
 };
 
+void printLog(int i, int dur, int pl, char* oper)
+{
+    int pid = getpid();
+    long int tid = pthread_self();
+
+    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; %s\n",time(NULL),i,pid,tid,dur,pl,oper);
+}
+
 void sigusr1_handler(int signo){if (signo != SIGUSR1) fprintf(stderr,"This handler shouldn't have been called.\n");}
 void sigusr2_handler(int signo){if (signo != SIGUSR2) fprintf(stderr,"This handler shouldn't have been called.\n"); pthread_exit(0);}
 
@@ -47,8 +55,6 @@ void * countTime(void * arg)
     flag = 0;
     return NULL;
 }
-
-
 
 void* threadFunc(void * arg)
 {
@@ -80,7 +86,7 @@ void* threadFunc(void * arg)
     sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
     if (mkfifo(ansFifoName,0600) < 0)
     {
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"FAILD");
         pthread_exit(0);
     }
 
@@ -89,7 +95,7 @@ void* threadFunc(void * arg)
     if (reqFifoPtr == NULL)
     {
         pthread_mutex_unlock(&mutFifo);
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"FAILD");
         unlink(ansFifoName);
         pthread_exit(0);
     }
@@ -97,19 +103,19 @@ void* threadFunc(void * arg)
     if (fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
     {
         pthread_mutex_unlock(&mutFifo);
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"FAILD");
         fclose(reqFifoPtr);
         unlink(ansFifoName);
         pthread_exit(0);
     }
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
-    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IWANT\n",time(NULL),i,pid,tid,dur,pl);
+    printLog(i,dur,pl,"IWANT");
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
     if (ansFifoPtr == NULL) 
     {
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; FAILD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"FAILD");
         unlink(ansFifoName);
         pthread_exit(0);
     }
@@ -132,7 +138,7 @@ void* threadFunc(void * arg)
         pthread_mutex_lock(&mut);
         flag = 0;
         pthread_mutex_unlock(&mut);
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; CLOSD\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"CLOSD");
     }
     else
     {
@@ -140,7 +146,7 @@ void* threadFunc(void * arg)
         long int buffer3;
         sscanf(answer,"[ %d , %d , %ld , %d , %d ]",&buffer,&buffer2,&buffer3,&buffer4,&pl);
 
-        printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; IAMIN\n",time(NULL),i,pid,tid,dur,pl);
+        printLog(i,dur,pl,"TIMUP");
     } 
 
     unlink(ansFifoName);
