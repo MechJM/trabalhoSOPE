@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
     
     needCleanup = 0;
     
-    unlink(fifoname);
+    
 
     sigset_t mask;
     sigfillset(&mask);
@@ -337,6 +337,8 @@ int main(int argc, char* argv[])
     pthread_mutex_destroy(&placeMut);
     pthread_mutex_destroy(&queueMut);
     sem_destroy(&bathroomPlace);
+
+    unlink(fifoname);
 
     return 0;
 }
