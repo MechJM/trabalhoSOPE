@@ -76,7 +76,6 @@ void * countTime(void * arg)
 
     if (needCleanup)
     {
-
         unlink(fifoname);
 
         sigset_t mask;
@@ -292,7 +291,6 @@ int main(int argc, char* argv[])
 
     while (flag)
     {
-        
         FILE* reqFifoPtr = fopen(fifoname,"r");
         if (reqFifoPtr == NULL)
         {
@@ -318,7 +316,6 @@ int main(int argc, char* argv[])
             }
             //nanosleep(&time1,&time2); 
         }
-        
         fclose(reqFifoPtr);
     }
     
