@@ -35,6 +35,16 @@ int needCleanup[NUM_THREADS];
 
 void * countTime(void * arg)
 {
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = sigusr1_handler;
+    if (sigaction(SIGUSR1,&action,NULL) < 0)
+    {
+        fprintf(stderr,"Couldn't install handler.\n");
+        exit(1);
+    }
+
     int time = *((int * )arg);
 
     struct timespec time1,time2;
@@ -149,11 +159,13 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+    
+
     struct sigaction action;
     sigemptyset(&action.sa_mask);
+    action.sa_handler = SIG_IGN;
     action.sa_flags = 0;
-    action.sa_handler = sigusr1_handler;
-    if (sigaction(SIGUSR1,&action,NULL) < 0)
+    if (sigaction(SIGPIPE,&action,NULL) < 0)
     {
         fprintf(stderr,"Couldn't install handler.\n");
         exit(1);
@@ -208,6 +220,7 @@ int main(int argc, char* argv[])
         }
     }
 
+    
   
     for (int i2 = 0; i2 < i; i2++) 
     {
@@ -219,8 +232,11 @@ int main(int argc, char* argv[])
         }
     }
 
+    
+
     pthread_kill(timeThread,SIGUSR1);
     pthread_join(timeThread,NULL);
+    
     
 
     pthread_mutex_destroy(&mut);
