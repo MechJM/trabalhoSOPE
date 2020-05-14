@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        fprintf(stderr,"Usage: U1 <-t nsecs> fifoname\n");
+        fprintf(stderr,"Usage: U2 <-t nsecs> fifoname\n");
         exit(1);
     }
 
@@ -196,6 +196,7 @@ int main(int argc, char* argv[])
     }
 
     pthread_t tids[NUM_THREADS];
+
 
     struct timespec time1,time2;
     time1.tv_sec = 0;

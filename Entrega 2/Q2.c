@@ -76,6 +76,7 @@ void * countTime(void * arg)
 
     if (needCleanup)
     {
+
         unlink(fifoname);
 
         sigset_t mask;
@@ -219,7 +220,7 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        fprintf(stderr,"Usage: Q1 <-t nsecs> fifoname\n");
+        fprintf(stderr,"Usage: Q2 <-t nsecs> [-l nplaces] [-n nthreads] fifoname\n");
         exit(1);
     }
 
@@ -277,6 +278,12 @@ int main(int argc, char* argv[])
     }
     
     
+/*
+    struct timespec time1,time2;
+    time1.tv_nsec = 1000000;
+    time1.tv_sec = 0;
+*/
+    
     char request[STR_LEN] = "";
     
     int requestIndex = 0;
@@ -303,12 +310,13 @@ int main(int argc, char* argv[])
             {
                 
                 if (pthread_create(&tids[threadsCreated],NULL,threadFunc,NULL) != 0)
-                    {
-                        fprintf(stderr,"Couldn't create thread.\n");
-                        exit(1);
-                    }
-                    threadsCreated++;
-            } 
+                {
+                    fprintf(stderr,"Couldn't create thread.\n");
+                    exit(1);
+                }
+                threadsCreated++;
+            }
+            //nanosleep(&time1,&time2); 
         }
         
         fclose(reqFifoPtr);
@@ -326,7 +334,7 @@ int main(int argc, char* argv[])
     {
         if (pthread_join(tids[i2],NULL) != 0)
         {
-            fprintf(stderr,"Couldn't wait for thread.\n");
+            fprintf(stderr,"Couldn't wait for thread. Error value: %d\n",errno);
             exit(1);
         }
     }
