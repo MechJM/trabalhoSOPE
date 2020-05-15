@@ -277,12 +277,6 @@ int main(int argc, char* argv[])
     }
     
     
-/*
-    struct timespec time1,time2;
-    time1.tv_nsec = 1000000;
-    time1.tv_sec = 0;
-*/
-    
     char request[STR_LEN] = "";
     
     int requestIndex = 0;
@@ -314,7 +308,6 @@ int main(int argc, char* argv[])
                 }
                 threadsCreated++;
             }
-            //nanosleep(&time1,&time2); 
         }
         fclose(reqFifoPtr);
     }

@@ -204,6 +204,8 @@ int main(int argc, char* argv[])
 
     int indexes[NUM_THREADS];
 
+    
+
     int i = 0;
     while (flag)
     {
