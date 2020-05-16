@@ -1,19 +1,21 @@
 Detalhes de implementação:
 
-U1:
+U2:
 - As mensagens trocadas com o servidos são delimitadas com parênteses retos e cada uma é colocada numa linha diferente.
-- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com a função alarm e o respetivo signal handler. 
+- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com uma thread auxiliar e a função nanosleep.
 - É usada uma variável global para obter o valor sequencial do parâmetro i da mensagem, cujo acesso é gerido com um mutex.
 - A duração usada no pedido é um valor aleatório entre 1 e 20.
 - O registo da operação FAILD é realizado quando ocorrem erros.
 - A main thread espera 5 milissegundos entre cada criação de uma thread nova.
+- É enviado um sinal à thread auxiliar para a "acordar" no caso de o cliente ter maior duração que o cliente.
+- No caso de alguma das threads criadas para enviarem pedidos ficar presa, a main thread, no ciclo de recolha de threads envia um sinal à thread presa para esta terminar com pthread_exit, sendo que ações associadas a cleanup são realizadas utilizando as funções pthread_cleanup_push e pthread_cleanup_pop 
 
-Q1:
-- A main thread espera 5 milissegundos entre cada criação de uma thread nova.
-- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com a função alarm e o respetivo signal handler. 
+Q2:
+- A limitação do tempo de funcionamento ao fornecido como argumento da linha de comandos (nsecs) é feita com uma thread auxiliar e a função nanosleep.
 - As mensagens trocadas com o servidos são delimitadas com parênteses retos e cada uma é colocada numa linha diferente.
-- O número de cada casa de banho é igual ao número sequencial fornecido pelo cliente.
-- Os pedidos feitos fora do tempo são atendidos pela main thread.
-
-Notas adicionais:
-- Se o tempo (nsecs) do servidor for superior ao do cliente, o programa do servidor não termina bem a menos que outros clientes sejam chamados e consequentemente, o servidor. Sabemos porque isto ocorre mas, apesar dos nossos esforços, não conseguimos solucionar o problema.
+- É usada uma implementação muito básica de uma fila para controlar que pedidos devem ser processados a seguir e quantos ainda há para processar.
+- O acesso à fila é regulado com um mutex.
+- A limitação do número de lugares é feita com um semáforo.
+- No caso de a main thread ficar presa no FIFO público, a thread auxiliar que controla o tempo encarregar-se-á de realizar ações associadas a cleanup e terminará o programa.
+- Enquanto estiverem a chegar pedidos e o limite do número de threads não tiver sido atingido, são criadas novas threads. Após atingir o limite, as threads criadas tratarão de todos os pedidos que houver.
+- As threads criadas para lidar com pedidos mantêm-se em funcionamente enquanto houver pedidos para tratar ou a duração do servidor não tiver chegado ao fim.
