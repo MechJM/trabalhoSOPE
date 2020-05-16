@@ -7,23 +7,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#include "aux_funcs.h"
 
 
 #define NUM_THREADS 100000
 #define DONT_EXECUTE 0
 #define STR_LEN 100
 
-
-void printLog(int i, int dur, int pl, char* oper)
-{
-    int pid = getpid();
-    long int tid = pthread_self();
-
-    printf("%ld ; %5d ; %d ; %ld ; %2d ; %5d ; %s\n",time(NULL),i,pid,tid,dur,pl,oper);
-}
-
-void sigusr1_handler(int signo){if (signo != SIGUSR1) fprintf(stderr,"This handler shouldn't have been called.\n");}
-void sigusr2_handler(int signo){if (signo != SIGUSR2) fprintf(stderr,"This handler shouldn't have been called.\n"); pthread_exit(0);}
 
 char fifoname[STR_LEN] = "";
 int seqNum = 1;
@@ -80,46 +70,81 @@ void* threadFunc(void * arg)
     int dur = rand() % 20 + 1;
     int pl = -1;
 
-    
+    struct logInfo info;
+    info.i = i;
+    info.dur = dur;
+    info.pl = pl;
+      
 
     char ansFifoName[STR_LEN] = "";
     sprintf(ansFifoName,"/tmp/%d.%ld",pid,tid);
+
+    info.i = i;
+    info.dur = dur;
+    info.pl = pl;
+    pthread_cleanup_push(cleanPrintLog,&info);  
     if (mkfifo(ansFifoName,0600) < 0)
     {
-        printLog(i,dur,pl,"FAILD");
         pthread_exit(0);
     }
+    pthread_cleanup_pop(DONT_EXECUTE);
 
     pthread_mutex_lock(&mutFifo);
     FILE* reqFifoPtr = fopen(fifoname,"w");
+
+    
+    info.i = i;
+    info.dur = dur;
+    info.pl = pl;
+    pthread_cleanup_push(cleanUnlinkFifo,ansFifoName);
+    pthread_cleanup_push(cleanPrintLog,&info);
+    pthread_cleanup_push(cleanUnlockMutex,&mutFifo);
     if (reqFifoPtr == NULL)
     {
-        pthread_mutex_unlock(&mutFifo);
-        printLog(i,dur,pl,"FAILD");
-        unlink(ansFifoName);
+
         pthread_exit(0);
     }
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
 
+
+    info.i = i;
+    info.dur = dur;
+    info.pl = pl;
+    pthread_cleanup_push(cleanUnlinkFifo,ansFifoName);
+    pthread_cleanup_push(cleanCloseFile,reqFifoPtr);
+    pthread_cleanup_push(cleanPrintLog,&info);
+    pthread_cleanup_push(cleanUnlockMutex,&mutFifo);
     if (fprintf(reqFifoPtr,"[ %d , %d , %ld , %d , %d ]\n",i,pid,tid,dur,pl) < 0)
     {
-        pthread_mutex_unlock(&mutFifo);
-        printLog(i,dur,pl,"FAILD");
-        fclose(reqFifoPtr);
-        unlink(ansFifoName);
         pthread_exit(0);
     }
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
+
+
     fclose(reqFifoPtr);
     pthread_mutex_unlock(&mutFifo);
     printLog(i,dur,pl,"IWANT");
 
     FILE* ansFifoPtr = fopen(ansFifoName,"r");
+
+    info.i = i;
+    info.dur = dur;
+    info.pl = pl;
+    pthread_cleanup_push(cleanUnlinkFifo,ansFifoName);
+    pthread_cleanup_push(cleanPrintLog,&info);
     if (ansFifoPtr == NULL) 
     {
         printLog(i,dur,pl,"FAILD");
         unlink(ansFifoName);
         pthread_exit(0);
     }
-    
+    pthread_cleanup_pop(DONT_EXECUTE);
+    pthread_cleanup_pop(DONT_EXECUTE);
     
    
     char answer[STR_LEN] = "";
